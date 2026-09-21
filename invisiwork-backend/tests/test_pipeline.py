@@ -27,16 +27,16 @@ from app import extensions
 @pytest.fixture
 def app():
     """Create a test Flask app with mongomock database."""
-    app = create_app("testing")
-
-    # Override config for pipeline
-    app.config["PIPELINE_SECRET"] = "test-secret-12345"
-
     import mongomock
     client = mongomock.MongoClient()
     db = client["invisiwork_test"]
     extensions.mongo_client = client
     extensions.mongo_db = db
+
+    app = create_app("testing")
+
+    # Override config for pipeline
+    app.config["PIPELINE_SECRET"] = "test-secret-12345"
 
     # Create indexes
     app._create_indexes()

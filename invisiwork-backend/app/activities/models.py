@@ -24,7 +24,7 @@ from typing import Optional, Tuple, List
 
 from bson import ObjectId
 
-from app.extensions import mongo_db
+from app import extensions
 
 
 def create_activity(
@@ -61,7 +61,7 @@ def create_activity(
         "created_at": datetime.now(timezone.utc),
     }
 
-    result = mongo_db.activities.insert_one(doc)
+    result = extensions.mongo_db.activities.insert_one(doc)
     doc["_id"] = result.inserted_id
 
     return _safe_activity(doc)
@@ -97,10 +97,10 @@ def get_activities(
         query["date"] = date_filter
 
     # Count total across the whole query before applying limit/offset
-    total_count = mongo_db.activities.count_documents(query)
+    total_count = extensions.mongo_db.activities.count_documents(query)
 
     cursor = (
-        mongo_db.activities.find(query)
+        extensions.mongo_db.activities.find(query)
         .sort("created_at", -1)  # Descending: most recently logged first
         .skip(offset)
         .limit(limit)
@@ -123,7 +123,7 @@ def find_activity_by_id(activity_id: str) -> Optional[dict]:
     if not ObjectId.is_valid(activity_id):
         return None
         
-    doc = mongo_db.activities.find_one({"_id": ObjectId(activity_id)})
+    doc = extensions.mongo_db.activities.find_one({"_id": ObjectId(activity_id)})
     if doc:
         return _safe_activity(doc)
     return None
@@ -137,7 +137,7 @@ def get_raw_activity_by_id(activity_id: str) -> Optional[dict]:
     if not ObjectId.is_valid(activity_id):
         return None
         
-    return mongo_db.activities.find_one({"_id": ObjectId(activity_id)})
+    return extensions.mongo_db.activities.find_one({"_id": ObjectId(activity_id)})
 
 
 def delete_activity(activity_id: str) -> bool:
@@ -152,7 +152,7 @@ def delete_activity(activity_id: str) -> bool:
     if not ObjectId.is_valid(activity_id):
         return False
         
-    result = mongo_db.activities.delete_one({"_id": ObjectId(activity_id)})
+    result = extensions.mongo_db.activities.delete_one({"_id": ObjectId(activity_id)})
     return result.deleted_count > 0
 
 

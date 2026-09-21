@@ -197,5 +197,4 @@ def compute_all_metrics(activities: list) -> dict:
         "total_hours": round(total_min / 60, 2),
         "invisible_hours": round(invisible_min / 60, 2),
         "visible_hours": round(visible_min / 60, 2),
-        "total_activities": len(activities),
     }
