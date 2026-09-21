@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    // Anti-flicker script: Apply dark mode immediately before page renders
+    (function() {
+      const savedTheme = localStorage.getItem('invisiwork-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="InvisiWork — Track invisible developer work like code reviews, mentoring, debugging, and every contribution that never makes it into a ticket.">
+  <title>InvisiWork | Make Your Invisible Work Visible</title>
+
+  <!-- CSS (order matters) -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/landing.css">
+</head>
+
+<body>
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ═══ NAVBAR (Landing Variant) ═══ -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <a href="index.html" class="navbar__brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+      <span class="navbar__brand-name">InvisiWork</span>
+    </a>
+    <div class="navbar__right">
+      <button id="theme-toggle" class="navbar__theme-toggle" aria-label="Switch to dark mode"></button>
+
+      <!--
+        FIX #8: "Sign In" now routes to get-started.html?mode=signin
+        so returning users see the sign-in form, not the signup form.
+        "Get Started" (signup) is a separate CTA in the hero section.
+      -->
+      <a href="get-started.html?mode=signin" class="btn btn--outline">Sign In</a>
+    </div>
+  </nav>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main id="main-content">
+
+    <!-- ── HERO SECTION ── -->
+    <section class="hero animate-section">
+      <div class="hero__container">
+        <span class="hero__pill">👁 Free for teams up to 10</span>
+        <h1 class="hero__title">
+          <span class="hero__title--dark">Your invisible work,</span><br>
+          <span class="hero__title--teal">finally visible.</span>
+        </h1>
+        <p class="hero__sub">Track code reviews, mentoring, docs, and every contribution that never makes it into a
+          ticket.</p>
+        <div class="hero__cta">
+          <!-- This CTA is for new users — routes to signup (no mode param) -->
+          <a href="get-started.html" class="btn btn--primary btn--lg">Get Started →</a>
+          <span class="hero__cta-note">No credit card required</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── STATS ROW ── -->
+    <section class="stats-row animate-section">
+      <div class="stats-row__label-wrap">
+        <span class="stats-row__line"></span>
+        <p class="stats-row__label">Trusted by engineering teams worldwide</p>
+        <span class="stats-row__line"></span>
+      </div>
+      <div class="stats-row__grid">
+        <div class="card stat-card">
+          <div class="stat-card__value" data-target="12400">0</div>
+          <div class="stat-card__suffix">+ Hours tracked</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-card__value" data-target="320">0</div>
+          <div class="stat-card__suffix">+ Teams active</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-card__value" data-target="48000">0</div>
+          <div class="stat-card__suffix">+ Reviews logged</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FEATURES SECTION ── -->
+    <section class="features animate-section">
+      <h2 class="features__title">Built for the work nobody tracks</h2>
+      <p class="features__sub">Everything your team contributes, finally in one place.</p>
+      <div class="features__grid">
+
+        <!-- Card 1 — Track Everything -->
+        <div class="card feature-card feature-card--center">
+          <div class="feature-card__icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 11l3 3L22 4"></path>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+          </div>
+          <h3>Track Everything</h3>
+          <p>Log code reviews, mentoring sessions, documentation, and every invisible contribution in seconds.</p>
+        </div>
+
+        <!-- Card 2 — Team Visibility (Featured) -->
+        <div class="card card--teal card--featured feature-card feature-card--featured">
+          <span class="feature-card__featured-badge">⭐ Featured</span>
+          <div class="feature-card__header-row">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <h3>Team Visibility</h3>
+          </div>
+          <p>Give managers a real picture of contribution. See who's doing the invisible work that holds teams together.
+          </p>
+        </div>
+
+        <!-- Card 3 — Impact Metrics -->
+        <div class="card feature-card feature-card--icon-left">
+          <div class="feature-card__header-row">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+            <h3>Impact Metrics</h3>
+          </div>
+          <p>IWR, BCS, PII — custom metrics that quantify invisible effort and surface burnout risk before it's too
+            late.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── CTA SECTION ── -->
+    <section class="cta-section animate-section">
+      <h2>Ready to make your work count?</h2>
+      <p>Join hundreds of engineering teams already tracking their invisible contributions.</p>
+      <a href="get-started.html" class="btn btn--primary btn--lg">Start Tracking →</a>
+    </section>
+
+  </main>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span class="footer__brand-name">InvisiWork</span>
+      </div>
+      <p class="footer__tagline">Built for teams that value all contributions.</p>
+    </div>
+  </footer>
+
+  <!-- ═══ SCRIPTS ═══ -->
+  <script src="js/theme.js" type="module"></script>
+  <script src="js/navbar.js" type="module"></script>
+
+  <!-- Landing page animations (inline, runs after DOM) -->
+  <script type="module">
+    import { countUp } from './js/utils.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Stagger animate-in for sections
+      const sections = document.querySelectorAll('.animate-section');
+      sections.forEach((section, i) => {
+        setTimeout(() => {
+          section.classList.add('animate-in');
+        }, i * 200);
+      });
+
+      // Count-up stats after 600ms
+      setTimeout(() => {
+        const statValues = document.querySelectorAll('.stat-card__value');
+        statValues.forEach(el => {
+          const target = parseInt(el.getAttribute('data-target'), 10);
+          countUp(el, target, 1500);
+        });
+      }, 600);
+    });
+  </script>
+  <div id="toast-container" class="toast-container"></div>
+</body>
+
+</html>

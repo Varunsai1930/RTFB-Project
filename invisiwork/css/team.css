@@ -1,0 +1,509 @@
+/* ═══════════════════════════════════════════════════════════════
+   INVISIWORK — TEAM DASHBOARD STYLES
+   Header, Stats, Project Cards, Member Cards, Filters
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Page Header ── */
+.team-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6) var(--space-6);
+}
+
+.team-header h1 {
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text);
+}
+
+.team-header p {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-base);
+  margin-top: var(--space-1);
+}
+
+/* ── Team Stats Row ── */
+.team-stats-row {
+  max-width: 1400px;
+  margin: 0 auto var(--space-6);
+  padding: 0 var(--space-6);
+}
+
+.team-stats-row .skeleton-wrap,
+.team-stats-row .content-wrap {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+}
+
+.team-stat-card {
+  text-align: center;
+  padding: var(--space-6);
+}
+
+.team-stat-card__value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
+}
+
+.team-stat-card__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Projects Section ── */
+.projects-section {
+  max-width: 1400px;
+  margin: 0 auto var(--space-6);
+  padding: 0 var(--space-6);
+}
+
+.projects-section__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.projects-section__header h2 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+/* ── Filter Chips ── */
+.project-filter-row {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  border: 1.5px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-text-muted);
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-family: var(--font-family);
+}
+
+.filter-chip:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.filter-chip--active {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+/* ── Projects Grid ── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: var(--space-5);
+}
+
+/* ── Project Card ── */
+.project-card {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.project-card__name {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.project-card__desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.status-badge--in-progress {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-badge--review {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge--completed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-badge--critical {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Priority Indicator */
+.priority-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.priority-dot--critical {
+  background: #ef4444;
+}
+
+.priority-dot--high {
+  background: #f59e0b;
+}
+
+.priority-dot--medium {
+  background: #3b82f6;
+}
+
+.priority-dot--low {
+  background: #94a3b8;
+}
+
+.project-card__priority {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+}
+
+/* Progress Bar */
+.project-card__progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.project-card__progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.project-card__progress-pct {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.project-card__progress-track {
+  height: 8px;
+  background: var(--color-border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.project-card__progress-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  transition: width 1s ease;
+  width: 0%;
+}
+
+.progress-fill--blue {
+  background: #3b82f6;
+}
+
+.progress-fill--amber {
+  background: #f59e0b;
+}
+
+.progress-fill--green {
+  background: #10b981;
+}
+
+.progress-fill--red {
+  background: #ef4444;
+}
+
+/* Milestones */
+.project-card__milestones {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.milestone-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.milestone-item--clickable {
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-base);
+  user-select: none;
+}
+
+.milestone-item--clickable:hover {
+  background: var(--color-bg);
+}
+
+.milestone-item--clickable:active {
+  background: var(--color-border);
+}
+
+.milestone-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background var(--transition-base), border-color var(--transition-base);
+}
+
+.milestone-check--done {
+  background: var(--color-primary);
+  color: white;
+}
+
+.milestone-check--pending {
+  border: 2px solid var(--color-border);
+  background: transparent;
+}
+
+.milestone-check__empty {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.milestone-item--clickable:hover .milestone-check--pending {
+  border-color: var(--color-primary);
+}
+
+.milestone-label {
+  color: var(--color-text);
+}
+
+.milestone-label--done {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+/* Footer Row */
+.project-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.project-card__assignees {
+  display: flex;
+  gap: 0;
+}
+
+.project-card__assignee {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), #1a9980);
+  color: white;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-card);
+  margin-left: -8px;
+}
+
+.project-card__assignee:first-child {
+  margin-left: 0;
+}
+
+.project-card__due {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.project-card__activity {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+  font-style: italic;
+}
+
+/* ── Members Section ── */
+.members-section {
+  max-width: 1400px;
+  margin: 0 auto var(--space-8);
+  padding: 0 var(--space-6);
+}
+
+.members-section h2 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin-bottom: var(--space-5);
+}
+
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-5);
+}
+
+/* ── Member Card ── */
+.member-card {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-3);
+}
+
+.member-card__avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), #1a9980);
+  color: white;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.member-card__name {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.member-card__role {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-top: -4px;
+}
+
+.member-card__stats {
+  display: flex;
+  gap: var(--space-5);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--color-border);
+  width: 100%;
+  justify-content: center;
+  margin-top: var(--space-2);
+}
+
+.member-card__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.member-card__stat-val {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text);
+}
+
+.member-card__stat-label {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.member-card__badge {
+  margin-top: var(--space-1);
+}
+
+/* ═══ RESPONSIVE ═══ */
+
+@media (max-width: 1024px) {
+
+  .team-stats-row .skeleton-wrap,
+  .team-stats-row .content-wrap {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+
+  .team-stats-row .skeleton-wrap,
+  .team-stats-row .content-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .team-header {
+    padding: var(--space-6) var(--space-4) var(--space-4);
+  }
+
+  .team-stats-row,
+  .projects-section,
+  .members-section {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .members-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .projects-section__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

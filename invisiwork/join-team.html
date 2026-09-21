@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    // Anti-flicker script: Apply dark mode immediately before page renders
+    (function() {
+      const savedTheme = localStorage.getItem('invisiwork-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="InvisiWork — Join your team by entering the team code provided by your manager.">
+  <title>InvisiWork | Join Team</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <style>
+    .onboarding {
+      min-height: 100vh;
+      background: var(--color-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--space-8) var(--space-6);
+    }
+
+    .onboarding__logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      text-decoration: none;
+      margin-bottom: var(--space-10);
+    }
+
+    .onboarding__logo-text {
+      font-weight: var(--font-weight-bold);
+      font-size: var(--font-size-lg);
+      color: var(--color-text);
+    }
+
+    /* ── Step Indicator ── */
+    .steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin: 0 0 32px;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-muted);
+    }
+
+    .step__dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-border);
+      border: 2px solid var(--color-border);
+      display: block;
+      transition: background var(--transition-base), border-color var(--transition-base);
+    }
+
+    .step--done .step__dot {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    .step--done span { color: var(--color-primary); }
+
+    .step--active .step__dot {
+      background: transparent;
+      border-color: var(--color-primary);
+    }
+
+    .step--active span { color: var(--color-primary); }
+
+    .step__line {
+      flex: 1;
+      height: 2px;
+      background: var(--color-border);
+      min-width: 48px;
+      align-self: flex-start;
+      margin-top: 13px;
+    }
+
+    .step__line--done {
+      background: var(--color-primary);
+    }
+
+    /* ── Card ── */
+    .onboarding__card {
+      max-width: 440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: var(--space-10) var(--space-8);
+    }
+
+    .onboarding__card h1 {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-extrabold);
+      margin-bottom: var(--space-2);
+      color: var(--color-text);
+    }
+
+    .onboarding__card .onboarding__sub {
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-8);
+      font-size: var(--font-size-base);
+    }
+
+    .onboarding__label {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      display: block;
+      margin-bottom: var(--space-2);
+      color: var(--color-text);
+    }
+
+    .onboarding__field {
+      margin-bottom: var(--space-4);
+    }
+
+    /* ── Team Code Input (large, centered, monospace) ── */
+    .team-code-input {
+      text-align: center;
+      font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      padding: var(--space-4) var(--space-3);
+    }
+
+    /* ── Success State ── */
+    .join-success {
+      text-align: center;
+      padding: var(--space-6) 0;
+      display: none;
+    }
+
+    .join-success__icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      margin: 0 auto var(--space-4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .join-success__icon svg {
+      width: 32px;
+      height: 32px;
+      stroke: white;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    .join-success h2 {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+      margin-bottom: var(--space-2);
+    }
+
+    .join-success p {
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-6);
+    }
+
+    .join-success__team-name {
+      color: var(--color-primary);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    /* ── Skip Link ── */
+    .onboarding__skip {
+      text-align: center;
+      margin-top: var(--space-4);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+    }
+
+    .onboarding__skip a {
+      color: var(--color-text-muted);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .onboarding__skip a:hover {
+      color: var(--color-primary);
+    }
+
+    /* ── Theme Toggle ── */
+    .onboarding__theme-toggle {
+      position: fixed;
+      top: var(--space-4);
+      right: var(--space-4);
+      background: none;
+      border: none;
+      padding: var(--space-2);
+      color: var(--color-text-muted);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .onboarding__theme-toggle:hover {
+      color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Theme Toggle -->
+  <button id="theme-toggle" class="onboarding__theme-toggle" aria-label="Switch to dark mode"></button>
+
+  <div class="onboarding" id="main-content">
+
+    <!-- Logo -->
+    <a href="index.html" class="onboarding__logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+      <span class="onboarding__logo-text">InvisiWork</span>
+    </a>
+
+    <!-- Step Indicator -->
+    <div class="steps">
+      <div class="step step--done">
+        <span class="step__dot"></span>
+        <span>Account</span>
+      </div>
+      <div class="step__line step__line--done"></div>
+      <div class="step step--active">
+        <span class="step__dot"></span>
+        <span>Your Team</span>
+      </div>
+      <div class="step__line"></div>
+      <div class="step">
+        <span class="step__dot"></span>
+        <span>First Log</span>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="card onboarding__card">
+
+      <!-- Form State -->
+      <div id="form-state">
+        <h1>Join your team</h1>
+        <p class="onboarding__sub">Enter the team code your manager shared with you.</p>
+
+        <div class="onboarding__field">
+          <label for="team-code" class="onboarding__label">Team Code</label>
+          <input id="team-code" type="text" class="input team-code-input" placeholder="ABC123"
+                 maxlength="6" autocomplete="off" spellcheck="false">
+          <p class="error-msg" id="code-error" style="display:none"></p>
+        </div>
+
+        <div id="global-error" style="color:var(--color-danger); font-size:var(--font-size-sm); text-align:center; margin-bottom:var(--space-4); min-height:1.2em;"></div>
+
+        <button id="join-btn" class="btn btn--primary btn--full btn--lg">
+          Join Team →
+        </button>
+
+        <p class="onboarding__skip">
+          <a href="dashboard.html" id="skip-link">Skip for now →</a>
+        </p>
+      </div>
+
+      <!-- Success State (hidden by default) -->
+      <div id="success-state" class="join-success">
+        <div class="join-success__icon">
+          <svg viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h2>You're in! 🎉</h2>
+        <p>You've joined <span id="team-name-display" class="join-success__team-name"></span></p>
+        <button id="continue-btn" class="btn btn--primary btn--full btn--lg">
+          Go to Dashboard →
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ SCRIPTS ═══ -->
+  <script src="js/theme.js" type="module"></script>
+  <script src="js/join-team.js" type="module"></script>
+  <div id="toast-container" class="toast-container"></div>
+</body>
+
+</html>

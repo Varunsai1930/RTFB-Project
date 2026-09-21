@@ -1,0 +1,303 @@
+/* ═══════════════════════════════════════════════════════════════
+   INVISIWORK — PERSONAL DASHBOARD STYLES
+   Page Header, Metric Cards (Gauges, Scores), Breakdown, Donut
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Page Header ── */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6) var(--space-6);
+}
+
+.page-header h1 {
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text);
+}
+
+.page-header p {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-base);
+  margin-top: var(--space-1);
+}
+
+/* ── Top Metrics Row ── */
+.metrics-top-row {
+  max-width: 1400px;
+  margin: 0 auto var(--space-6);
+  padding: 0 var(--space-6);
+}
+
+.metrics-top-row .skeleton-wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+}
+
+.metrics-top-row .content-wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+}
+
+/* ── Metric Card Base ── */
+.metric-card {
+  text-align: center;
+  padding: var(--space-8);
+}
+
+.metric-card__label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-3);
+}
+
+.metric-card__badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  margin-top: var(--space-2);
+}
+
+.metric-card__badge--success {
+  background: var(--color-success-bg);
+  color: #166534;
+}
+
+/* ── IWR Circular Gauge ── */
+.gauge-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto var(--space-2);
+}
+
+.gauge-svg {
+  display: block;
+}
+
+.gauge-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: baseline;
+}
+
+.gauge-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text);
+}
+
+.gauge-percent {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+}
+
+/* ── BCS Score Card ── */
+.score-large {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+}
+
+.score-bar-track {
+  height: 10px;
+  background: var(--color-border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  margin: var(--space-4) 0 var(--space-2);
+}
+
+.score-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  transition: width 1s ease;
+}
+
+.score-thresholds {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+}
+
+/* ── PII Card ── */
+.pii-breakdown {
+  margin-top: var(--space-5);
+  text-align: left;
+}
+
+.pii-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.pii-row .badge {
+  min-width: 100px;
+  justify-content: center;
+}
+
+.pii-bar-track {
+  flex: 1;
+  height: 8px;
+  background: var(--color-border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.pii-bar-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-pill);
+  width: 0%;
+  transition: width 1s ease;
+}
+
+.pii-pct {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  min-width: 32px;
+  text-align: right;
+}
+
+/* ── Activity Breakdown Section ── */
+.breakdown-section {
+  max-width: 1400px;
+  margin: 0 auto var(--space-6);
+  margin-left: auto;
+  margin-right: auto;
+  /* Override auto margin from .card hover on this section */
+}
+
+.breakdown-section h2 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.breakdown-section,
+.donut-section {
+  max-width: 1400px;
+  margin-left: var(--space-6);
+  margin-right: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+@media (min-width: 1432px) {
+
+  .breakdown-section,
+  .donut-section {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.breakdown-chart {
+  display: flex;
+  flex-direction: column;
+}
+
+.breakdown-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+}
+
+.breakdown-row .badge {
+  min-width: 120px;
+  justify-content: center;
+}
+
+.breakdown-bar-track {
+  flex: 1;
+  height: 10px;
+  background: var(--color-border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.breakdown-bar-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-pill);
+  width: 0%;
+  transition: width 1s ease;
+}
+
+.breakdown-pct {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  min-width: 36px;
+  text-align: right;
+}
+
+/* ── Donut Chart Section ── */
+.donut-section h2 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+
+/* ═══ RESPONSIVE ═══ */
+
+@media (max-width: 1024px) {
+
+  .metrics-top-row .skeleton-wrap,
+  .metrics-top-row .content-wrap {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .metrics-top-row .content-wrap .metric-card:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+
+  .metrics-top-row .skeleton-wrap,
+  .metrics-top-row .content-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics-top-row .content-wrap .metric-card:nth-child(3) {
+    grid-column: auto;
+  }
+
+  .page-header {
+    padding: var(--space-6) var(--space-4) var(--space-4);
+  }
+
+  .metrics-top-row {
+    padding: 0 var(--space-4);
+  }
+
+  .breakdown-section,
+  .donut-section {
+    margin-left: var(--space-4);
+    margin-right: var(--space-4);
+  }
+
+  .breakdown-row .badge {
+    min-width: 90px;
+    font-size: 0.65rem;
+  }
+}

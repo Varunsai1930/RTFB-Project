@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    // Anti-flicker script: Apply dark mode immediately before page renders
+    (function() {
+      const savedTheme = localStorage.getItem('invisiwork-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="InvisiWork — Manage your profile settings, credentials, and preferences.">
+  <title>InvisiWork | Profile Settings</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/profile.css">
+</head>
+
+<body>
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ═══ NAVBAR (App Variant) ═══ -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <a href="index.html" class="navbar__brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+      <span class="navbar__brand-name">InvisiWork</span>
+    </a>
+
+    <div class="navbar__right">
+      <button id="theme-toggle" class="navbar__theme-toggle" aria-label="Switch to dark mode"></button>
+      <div class="navbar__links">
+        <div class="navbar__dropdown-wrap">
+          <a href="#" class="navbar__link" id="dropdown-trigger">
+            Dashboard
+            <svg class="navbar__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </a>
+          <div class="navbar__dropdown" id="dropdown-menu">
+            <a href="personal-dashboard.html" class="navbar__dropdown-item">📊 Personal Dashboard</a>
+            <a href="weekly-summary.html" class="navbar__dropdown-item">📅 Weekly Summary</a>
+            <a href="team-dashboard.html" class="navbar__dropdown-item">👥 Team Dashboard</a>
+          </div>
+        </div>
+        <a href="#" class="navbar__link">Reports</a>
+        <a href="team-dashboard.html" class="navbar__link">Team</a>
+      </div>
+      <a href="profile.html" class="navbar__user" aria-label="Profile settings">
+        <div class="navbar__avatar" aria-hidden="true">AK</div>
+        <span class="navbar__user-name">Alex Kumar</span>
+      </a>
+      <button id="hamburger-btn" class="navbar__hamburger" aria-label="Open menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="navbar__drawer" id="navbar-drawer">
+      <div class="navbar__drawer-links">
+        <a href="profile.html" class="navbar__drawer-link navbar__drawer-link--active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          Profile Settings
+        </a>
+        <a href="dashboard.html" class="navbar__drawer-link" id="drawer-dash-btn">
+          Dashboard
+          <svg class="navbar__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </a>
+        <div class="navbar__drawer-sub" id="drawer-sub">
+          <a href="personal-dashboard.html" class="navbar__drawer-sub-link">📊 Personal Dashboard</a>
+          <a href="weekly-summary.html" class="navbar__drawer-sub-link">📅 Weekly Summary</a>
+        </div>
+        <a href="#" class="navbar__drawer-link">Reports</a>
+        <a href="team-dashboard.html" class="navbar__drawer-link">Team</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main id="main-content">
+
+    <!-- ── Page Header ── -->
+    <section class="profile-header stagger-section">
+      <div>
+        <h1>Profile Settings</h1>
+        <p>Manage your account details and preferences.</p>
+      </div>
+      <a href="dashboard.html" class="btn btn--outline">← Back to Dashboard</a>
+    </section>
+
+    <!-- ── Profile Content ── -->
+    <div class="profile-layout stagger-section">
+
+      <!-- Left: Avatar & Quick Info -->
+      <div class="profile-sidebar card">
+        <div class="profile-avatar-lg">
+          <span id="profile-initials">AK</span>
+        </div>
+        <h2 class="profile-sidebar__name" id="profile-display-name">Alex Kumar</h2>
+        <p class="profile-sidebar__role" id="profile-sidebar-role">Developer</p>
+        <p class="profile-sidebar__team">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span id="profile-sidebar-team-text">Platform Engineering</span>
+        </p>
+        <div class="profile-sidebar__stats">
+          <div class="profile-sidebar__stat">
+            <span class="profile-sidebar__stat-val">12</span>
+            <span class="profile-sidebar__stat-label">Day Streak 🔥</span>
+          </div>
+          <div class="profile-sidebar__stat-divider"></div>
+          <div class="profile-sidebar__stat">
+            <span class="profile-sidebar__stat-val">94</span>
+            <span class="profile-sidebar__stat-label">Impact Score</span>
+          </div>
+          <div class="profile-sidebar__stat-divider"></div>
+          <div class="profile-sidebar__stat">
+            <span class="profile-sidebar__stat-val">78%</span>
+            <span class="profile-sidebar__stat-label">IWR</span>
+          </div>
+        </div>
+        <div class="profile-sidebar__badge-row">
+          <span class="badge badge--review" style="padding:6px 14px">⭐ Top Contributor</span>
+        </div>
+      </div>
+
+      <!-- Right: Settings Forms -->
+      <div class="profile-forms">
+
+        <!-- Personal Information -->
+        <div class="card profile-section">
+          <div class="profile-section__header">
+            <div class="profile-section__header-left">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <h3>Personal Information</h3>
+            </div>
+            <button class="btn btn--ghost profile-edit-btn" id="edit-personal-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              Edit
+            </button>
+          </div>
+
+          <div class="profile-field-grid">
+            <div class="profile-field">
+              <label for="profile-name" class="profile-field__label">Full Name</label>
+              <input id="profile-name" type="text" class="input" value="Alex Kumar" disabled>
+            </div>
+            <div class="profile-field">
+              <label for="profile-email" class="profile-field__label">Work Email</label>
+              <input id="profile-email" type="email" class="input" value="alex.kumar@techcorp.io" disabled>
+            </div>
+            <div class="profile-field">
+              <label for="profile-role" class="profile-field__label">Role</label>
+              <input id="profile-role" type="text" class="input" value="Developer" disabled>
+            </div>
+            <div class="profile-field">
+              <label for="profile-team" class="profile-field__label">Team</label>
+              <input id="profile-team" type="text" class="input" value="Platform Engineering" disabled>
+            </div>
+          </div>
+
+          <div class="profile-actions" id="personal-actions" style="display:none">
+            <button class="btn btn--primary" id="save-personal-btn">Save Changes</button>
+            <button class="btn btn--outline" id="cancel-personal-btn">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Account Credentials -->
+        <div class="card profile-section">
+          <div class="profile-section__header">
+            <div class="profile-section__header-left">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <h3>Account Credentials</h3>
+            </div>
+          </div>
+
+          <div class="profile-credential-rows">
+            <div class="profile-credential">
+              <div class="profile-credential__info">
+                <span class="profile-credential__label">User ID</span>
+                <span class="profile-credential__value" id="cred-user-id">dev_001</span>
+              </div>
+              <button class="btn btn--ghost profile-copy-btn" data-copy="dev_001" aria-label="Copy User ID">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy
+              </button>
+            </div>
+            <div class="profile-credential">
+              <div class="profile-credential__info">
+                <span class="profile-credential__label">Email</span>
+                <span class="profile-credential__value" id="cred-email">alex.kumar@techcorp.io</span>
+              </div>
+              <button class="btn btn--ghost profile-copy-btn" id="copy-email-btn" data-copy="alex.kumar@techcorp.io"
+                aria-label="Copy Email">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy
+              </button>
+            </div>
+            <div class="profile-credential">
+              <div class="profile-credential__info">
+                <span class="profile-credential__label">Password</span>
+                <span class="profile-credential__value profile-credential__value--masked"
+                  id="cred-password">••••••••••</span>
+              </div>
+              <button class="btn btn--ghost" id="toggle-password-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" id="eye-icon">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <span id="toggle-password-text">Show</span>
+              </button>
+            </div>
+            <div class="profile-credential">
+              <div class="profile-credential__info">
+                <span class="profile-credential__label">Joined</span>
+                <span class="profile-credential__value" id="cred-joined">January 15, 2024</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-actions" style="margin-top:var(--space-5)">
+            <button class="btn btn--outline" id="change-password-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              Change Password
+            </button>
+          </div>
+        </div>
+
+        <!-- Preferences -->
+        <div class="card profile-section">
+          <div class="profile-section__header">
+            <div class="profile-section__header-left">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
+              </svg>
+              <h3>Preferences</h3>
+            </div>
+          </div>
+
+          <div class="profile-pref-rows">
+            <div class="profile-pref">
+              <div class="profile-pref__info">
+                <span class="profile-pref__label">Dark Mode</span>
+                <span class="profile-pref__desc">Switch between light and dark themes</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="pref-dark-mode">
+                <span class="toggle-switch__slider"></span>
+              </label>
+            </div>
+            <div class="profile-pref">
+              <div class="profile-pref__info">
+                <span class="profile-pref__label">Email Notifications</span>
+                <span class="profile-pref__desc">Receive weekly summary emails</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="pref-email-notif" checked>
+                <span class="toggle-switch__slider"></span>
+              </label>
+            </div>
+            <div class="profile-pref">
+              <div class="profile-pref__info">
+                <span class="profile-pref__label">Public Profile</span>
+                <span class="profile-pref__desc">Allow team members to see your dashboard</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="pref-public" checked>
+                <span class="toggle-switch__slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Log Out -->
+        <div class="card profile-section profile-section--logout">
+          <div class="profile-section__header">
+            <div class="profile-section__header-left">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              <h3>Session</h3>
+            </div>
+          </div>
+          <p class="profile-section__logout-desc">You are currently signed in as <strong
+              id="logout-email">alex.kumar@techcorp.io</strong></p>
+          <button class="btn btn--outline profile-logout-btn" id="logout-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Log Out
+          </button>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="card profile-section profile-section--danger">
+          <div class="profile-section__header">
+            <div class="profile-section__header-left">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                </path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              <h3 style="color:var(--color-danger)">Danger Zone</h3>
+            </div>
+          </div>
+          <p class="profile-section__danger-desc">Once you delete your account, there is no going back. Please be
+            certain.</p>
+          <button class="btn profile-danger-btn" id="delete-account-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Delete Account
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ═══ SCRIPTS ═══ -->
+  <script src="js/auth-guard.js" type="module"></script>
+  <script src="js/theme.js" type="module"></script>
+  <script src="js/navbar.js" type="module"></script>
+  <script src="js/profile.js" type="module"></script>
+</body>
+
+</html>

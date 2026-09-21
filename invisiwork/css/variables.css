@@ -1,0 +1,159 @@
+/* ═══════════════════════════════════════════════════════════════
+   INVISIWORK — DESIGN TOKENS (Single Source of Truth)
+   Every other CSS file references ONLY these variables.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Color — Light Mode ── */
+  --color-bg: #f5f5f0;
+  --color-bg-secondary: #eeede8;
+  --color-card: #ffffff;
+  --color-card-tint: #f0fdf9;
+  --color-primary: #2bbfa4;
+  --color-primary-dark: #22a08a;
+  --color-primary-light: #f0fdf9;
+  --color-primary-border: #2bbfa4;
+  --color-primary-glow: rgba(43, 191, 164, 0.15);
+  --color-text: #1a1a1a;
+  --color-text-muted: #6b7280;
+  --color-text-light: #9ca3af;
+  --color-border: #e5e7eb;
+  --color-shadow: rgba(0, 0, 0, 0.08);
+  --color-shadow-deep: rgba(0, 0, 0, 0.16);
+  --color-overlay: rgba(0, 0, 0, 0.3);
+
+  /* ── Status Colors ── */
+  --color-success: #10b981;
+  --color-success-bg: #d1fae5;
+  --color-success-text: #166534;
+  --color-warning: #f59e0b;
+  --color-warning-bg: #fef3c7;
+  --color-warning-text: #a16207;
+  --color-danger: #ef4444;
+  --color-danger-bg: #fee2e2;
+  --color-danger-text: #991b1b;
+  --color-info: #3b82f6;
+  --color-info-bg: #dbeafe;
+  --color-info-text: #1d4ed8;
+
+  /* ── Chart Palette ── */
+  --color-chart-1: #2bbfa4;
+  --color-chart-2: #3b82f6;
+  --color-chart-3: #f59e0b;
+  --color-chart-4: #ef4444;
+  --color-chart-5: #8b5cf6;
+  --color-chart-6: #ec4899;
+  --color-chart-muted: #94a3b8;
+
+  /* ── Badge Color Pairs ── */
+  --badge-review-bg: #ccfbf1;
+  --badge-review-text: #0f766e;
+  --badge-mentoring-bg: #dbeafe;
+  --badge-mentoring-text: #1d4ed8;
+  --badge-docs-bg: #ffedd5;
+  --badge-docs-text: #c2410c;
+  --badge-meeting-bg: #f3e8ff;
+  --badge-meeting-text: #7e22ce;
+  --badge-planning-bg: #fef9c3;
+  --badge-planning-text: #a16207;
+  --badge-other-bg: #f3f4f6;
+  --badge-other-text: #374151;
+  --badge-debug-bg: #fce7f3;
+  --badge-debug-text: #be185d;
+  --badge-infra-bg: #e0f2fe;
+  --badge-infra-text: #0369a1;
+
+  /* ── Typography ── */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --line-height-tight: 1.25;
+  --line-height-base: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* ── Spacing (4px base unit) ── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* ── Border Radius ── */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* ── Transitions ── */
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  --transition-spring: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* ── Navbar ── */
+  --navbar-height: 64px;
+
+  /* ── Z-index Scale ── */
+  --z-dropdown: 100;
+  --z-panel: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE
+   FIX #2 — Background changed to #0D0D0C as requested.
+   Secondary bg is one step lighter to maintain contrast
+   for cards, table stripes, and skeleton shimmer.
+   ═══════════════════════════════════════════════════════════════ */
+html.dark {
+  --color-bg: #0D0D0C;
+  --color-bg-secondary: #141413;
+  --color-card: #1a1a19;
+  --color-card-tint: #141e1c;
+  --color-primary: #2bbfa4;
+  --color-primary-dark: #22a08a;
+  --color-primary-light: #0f1e1b;
+  --color-primary-border: #2bbfa4;
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+  --color-text-light: #64748b;
+  --color-border: #2a2a28;
+  --color-shadow: rgba(0, 0, 0, 0.4);
+  --color-shadow-deep: rgba(0, 0, 0, 0.6);
+  --color-overlay: rgba(0, 0, 0, 0.7);
+}
+
+/* ── Global color transitions for dark mode switching ── */
+*,
+*::before,
+*::after {
+  transition: background-color var(--transition-slow),
+    color var(--transition-slow),
+    border-color var(--transition-slow);
+}

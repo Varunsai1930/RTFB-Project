@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    // Anti-flicker script: Apply dark mode immediately before page renders
+    (function() {
+      const savedTheme = localStorage.getItem('invisiwork-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="InvisiWork — Reports. Weekly trends, team comparisons, and key invisible work metrics in one place.">
+    <title>InvisiWork | Reports</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/reports.css">
+
+    <!-- Plotly CDN -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js" defer></script>
+</head>
+
+<body>
+    <!-- Skip Link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- ═══ NAVBAR ═══ -->
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <a href="index.html" class="navbar__brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span class="navbar__brand-name">InvisiWork</span>
+        </a>
+
+        <div class="navbar__right">
+            <button id="theme-toggle" class="navbar__theme-toggle" aria-label="Switch to dark mode"></button>
+            <div class="navbar__links">
+                <div class="navbar__dropdown-wrap">
+                    <a href="dashboard.html" class="navbar__link" id="dropdown-trigger">
+                        Dashboard
+                        <svg class="navbar__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </a>
+                    <div class="navbar__dropdown" id="dropdown-menu">
+                        <a href="personal-dashboard.html" class="navbar__dropdown-item">📊 Personal Dashboard</a>
+                        <a href="weekly-summary.html" class="navbar__dropdown-item">📅 Weekly Summary</a>
+                        <a href="team-dashboard.html" class="navbar__dropdown-item">👥 Team Dashboard</a>
+                    </div>
+                </div>
+                <a href="reports.html" class="navbar__link navbar__link--active">Reports</a>
+                <a href="team-dashboard.html" class="navbar__link">Team</a>
+            </div>
+            <a href="profile.html" class="navbar__user" aria-label="Profile settings">
+                <div class="navbar__avatar" aria-hidden="true">AK</div>
+                <span class="navbar__user-name">Alex Kumar</span>
+            </a>
+            <button id="hamburger-btn" class="navbar__hamburger" aria-label="Open menu" aria-expanded="false">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Drawer -->
+        <div class="navbar__drawer" id="navbar-drawer">
+            <div class="navbar__drawer-links">
+                <a href="dashboard.html" class="navbar__drawer-link" id="drawer-dash-btn">
+                    Dashboard
+                    <svg class="navbar__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        aria-hidden="true">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </a>
+                <div class="navbar__drawer-sub" id="drawer-sub">
+                    <a href="personal-dashboard.html" class="navbar__drawer-sub-link">📊 Personal Dashboard</a>
+                    <a href="weekly-summary.html" class="navbar__drawer-sub-link">📅 Weekly Summary</a>
+                    <a href="team-dashboard.html" class="navbar__drawer-sub-link">👥 Team Dashboard</a>
+                </div>
+                <a href="reports.html" class="navbar__drawer-link navbar__drawer-link--active">Reports</a>
+                <a href="team-dashboard.html" class="navbar__drawer-link">Team</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══ MAIN CONTENT ═══ -->
+    <main id="main-content">
+
+        <!-- ── Page Header ── -->
+        <div style="max-width:1400px;margin:0 auto;padding:var(--space-4) var(--space-6) 0">
+            <a href="dashboard.html" class="btn btn--outline">← Back to Dashboard</a>
+        </div>
+        <section class="reports-header stagger-section">
+            <div>
+                <h1>Reports</h1>
+                <p>Trends, comparisons, and key metrics across your team's invisible work.</p>
+            </div>
+            <div class="reports-header__actions">
+                <!-- Period selector -->
+                <div class="reports-period-select">
+                    <label for="period-select" class="reports-period-select__label">Period</label>
+                    <select id="period-select" class="reports-select">
+                        <option value="current">Mar 17 – Mar 23</option>
+                        <option value="prev1">Mar 10 – Mar 16</option>
+                        <option value="prev2">Mar 3 – Mar 9</option>
+                    </select>
+                </div>
+                <!-- Export PDF -->
+                <button id="export-pdf-btn" class="btn btn--primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    Export PDF
+                </button>
+            </div>
+        </section>
+
+        <!-- ── IWR / BCS / PII Summary Cards ── -->
+        <section class="reports-metrics stagger-section" id="metrics-section">
+
+            <!-- Skeleton -->
+            <div class="skeleton-wrap" id="metrics-skeleton">
+                <div class="card skeleton-kpi">
+                    <div class="skeleton skeleton--title"></div>
+                    <div class="skeleton skeleton--text-sm"></div>
+                    <div class="skeleton skeleton--bar"></div>
+                </div>
+                <div class="card skeleton-kpi">
+                    <div class="skeleton skeleton--title"></div>
+                    <div class="skeleton skeleton--text-sm"></div>
+                    <div class="skeleton skeleton--bar"></div>
+                </div>
+                <div class="card skeleton-kpi">
+                    <div class="skeleton skeleton--title"></div>
+                    <div class="skeleton skeleton--text-sm"></div>
+                    <div class="skeleton skeleton--bar"></div>
+                </div>
+            </div>
+
+            <!-- Real Content -->
+            <div class="content-wrap" id="metrics-content">
+
+                <!-- IWR Card -->
+                <div class="card report-metric-card">
+                    <div class="report-metric-card__header">
+                        <span class="report-metric-card__icon report-metric-card__icon--teal">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </span>
+                        <div>
+                            <p class="report-metric-card__label">Invisible Work Ratio</p>
+                            <p class="report-metric-card__abbr">IWR</p>
+                        </div>
+                    </div>
+                    <div class="report-metric-card__value" id="rpt-iwr-val">0<span
+                            class="report-metric-card__unit">%</span></div>
+                    <div class="report-metric-card__bar-track">
+                        <div class="report-metric-card__bar-fill report-metric-card__bar-fill--iwr" id="rpt-iwr-bar">
+                        </div>
+                    </div>
+                    <span class="report-metric-card__badge" id="rpt-iwr-badge"></span>
+                </div>
+
+                <!-- BCS Card -->
+                <div class="card report-metric-card">
+                    <div class="report-metric-card__header">
+                        <span class="report-metric-card__icon report-metric-card__icon--amber">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path
+                                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                                </path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </span>
+                        <div>
+                            <p class="report-metric-card__label">Burnout Correlation Score</p>
+                            <p class="report-metric-card__abbr">BCS</p>
+                        </div>
+                    </div>
+                    <div class="report-metric-card__value" id="rpt-bcs-val">0</div>
+                    <div class="report-metric-card__bar-track">
+                        <div class="report-metric-card__bar-fill" id="rpt-bcs-bar"></div>
+                    </div>
+                    <span class="report-metric-card__badge" id="rpt-bcs-badge"></span>
+                </div>
+
+                <!-- PII Card -->
+                <div class="card report-metric-card">
+                    <div class="report-metric-card__header">
+                        <span class="report-metric-card__icon report-metric-card__icon--green">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                        </span>
+                        <div>
+                            <p class="report-metric-card__label">Personal Impact Index</p>
+                            <p class="report-metric-card__abbr">PII</p>
+                        </div>
+                    </div>
+                    <div class="report-metric-card__value" id="rpt-pii-val">0</div>
+                    <div class="report-metric-card__bar-track">
+                        <div class="report-metric-card__bar-fill report-metric-card__bar-fill--green" id="rpt-pii-bar">
+                        </div>
+                    </div>
+                    <span class="report-metric-card__badge report-metric-card__badge--success"
+                        id="rpt-pii-badge"></span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ── Weekly Hours Trend (Line Chart) ── -->
+        <section class="card reports-chart-section stagger-section">
+            <div class="reports-chart-header">
+                <div>
+                    <h2>Weekly Hours Trend</h2>
+                    <p class="muted">Day-by-day comparison across the last 3 weeks</p>
+                </div>
+                <div class="reports-chart-legend" id="trend-legend"></div>
+            </div>
+            <div id="trend-chart" style="height: 340px;"></div>
+        </section>
+
+        <!-- ── Team Member Comparison Table ── -->
+        <section class="reports-table-section stagger-section">
+            <div class="reports-table-header">
+                <div>
+                    <h2>Team Member Comparison</h2>
+                    <p class="muted">This week's contributions across the team</p>
+                </div>
+                <div class="reports-table-controls">
+                    <input type="text" id="member-search" class="input reports-search" placeholder="Search member..."
+                        aria-label="Search team members">
+                </div>
+            </div>
+
+            <!-- Skeleton -->
+            <div class="skeleton-wrap" id="table-skeleton">
+                <div class="card" style="padding: var(--space-4)">
+                    <div class="skeleton skeleton--text"
+                        style="width:100%;height:44px;border-radius:var(--radius-sm);margin-bottom:var(--space-2)">
+                    </div>
+                    <div class="skeleton skeleton--text"
+                        style="width:100%;height:44px;border-radius:var(--radius-sm);margin-bottom:var(--space-2)">
+                    </div>
+                    <div class="skeleton skeleton--text"
+                        style="width:100%;height:44px;border-radius:var(--radius-sm);margin-bottom:var(--space-2)">
+                    </div>
+                    <div class="skeleton skeleton--text" style="width:100%;height:44px;border-radius:var(--radius-sm)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real Table -->
+            <div class="content-wrap" id="table-content">
+                <div class="table-wrap">
+                    <table class="reports-table" id="team-table">
+                        <thead>
+                            <tr>
+                                <th data-col="name" class="sortable">Member <span class="sort-icon"></span></th>
+                                <th data-col="role" class="sortable">Role <span class="sort-icon"></span></th>
+                                <th data-col="hours" class="sortable">Hours <span class="sort-icon"></span></th>
+                                <th data-col="impact" class="sortable">Impact Score <span class="sort-icon"></span></th>
+                                <th data-col="iwr" class="sortable">IWR <span class="sort-icon"></span></th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="team-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- ═══ SCRIPTS ═══ -->
+    <script src="js/auth-guard.js" type="module"></script>
+    <script src="js/theme.js" type="module"></script>
+    <script src="js/navbar.js" type="module"></script>
+    <script src="js/reports.js" type="module"></script>
+</body>
+
+</html>

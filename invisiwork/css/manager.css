@@ -1,0 +1,353 @@
+/* ═══════════════════════════════════════════════════════════════
+   INVISIWORK — MANAGER DASHBOARD CSS
+   Page-specific styles for the manager analytics dashboard.
+   All colors reference design tokens from variables.css.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Page Layout ── */
+.manager-page {
+  padding: var(--space-6) var(--space-8);
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ── Header ── */
+.manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.manager-header h1 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.manager-header__sub {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-1);
+}
+
+.manager-header__actions {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+/* ── KPI Row ── */
+.manager-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.manager-kpi {
+  text-align: center;
+  padding: var(--space-6);
+}
+
+.manager-kpi__value {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-primary);
+  line-height: 1;
+  margin-bottom: var(--space-1);
+}
+
+.manager-kpi__label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ── Risk Overview ── */
+.risk-overview {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.risk-card {
+  flex: 1;
+  text-align: center;
+  padding: var(--space-5) var(--space-4);
+  border-radius: var(--radius-lg);
+}
+
+.risk-card--low {
+  background: var(--color-success-bg);
+  border: 1px solid var(--color-success);
+}
+
+.risk-card--moderate {
+  background: var(--color-warning-bg);
+  border: 1px solid var(--color-warning);
+}
+
+.risk-card--high {
+  background: var(--color-danger-bg);
+  border: 1px solid var(--color-danger);
+}
+
+.risk-card__count {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-extrabold);
+  line-height: 1;
+  margin-bottom: var(--space-1);
+}
+
+.risk-card--low .risk-card__count { color: var(--color-success); }
+.risk-card--moderate .risk-card__count { color: var(--color-warning); }
+.risk-card--high .risk-card__count { color: var(--color-danger); }
+
+.risk-card__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.risk-card--low .risk-card__label { color: var(--color-success-text); }
+.risk-card--moderate .risk-card__label { color: var(--color-warning-text); }
+.risk-card--high .risk-card__label { color: var(--color-danger-text); }
+
+/* ── Chart Sections ── */
+.manager-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+.chart-card {
+  padding: var(--space-6);
+}
+
+.chart-card__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
+}
+
+.chart-card__sub {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-4);
+}
+
+.chart-container {
+  width: 100%;
+  min-height: 320px;
+}
+
+/* ── Full-Width Chart ── */
+.manager-chart-full {
+  margin-bottom: var(--space-8);
+}
+
+.manager-chart-full .chart-card {
+  width: 100%;
+}
+
+/* ── Developer Table ── */
+.dev-table-section {
+  margin-bottom: var(--space-8);
+}
+
+.dev-table-section h2 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+
+.dev-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+}
+
+.dev-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.dev-table thead {
+  background: var(--color-bg);
+}
+
+.dev-table th {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dev-table th:hover {
+  color: var(--color-text);
+}
+
+.dev-table td {
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.dev-table tbody tr:hover {
+  background: var(--color-primary-light);
+}
+
+.dev-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── Developer Name Cell ── */
+.dev-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.dev-cell__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  flex-shrink: 0;
+}
+
+.dev-cell__name {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.dev-cell__email {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* ── Risk Badge (inline) ── */
+.risk-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: capitalize;
+}
+
+.risk-badge--low {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.risk-badge--moderate {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}
+
+.risk-badge--high {
+  background: var(--color-danger-bg);
+  color: var(--color-danger-text);
+}
+
+/* ── Metric Bar (small inline bar) ── */
+.metric-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.metric-bar__value {
+  font-weight: var(--font-weight-semibold);
+  min-width: 32px;
+}
+
+.metric-bar__track {
+  width: 60px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.metric-bar__fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  transition: width 0.6s ease;
+}
+
+/* ── Empty State ── */
+.manager-empty {
+  text-align: center;
+  padding: var(--space-16) var(--space-8);
+  color: var(--color-text-muted);
+}
+
+.manager-empty__icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-4);
+}
+
+.manager-empty h2 {
+  font-size: var(--font-size-xl);
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+}
+
+.manager-empty p {
+  max-width: 400px;
+  margin: 0 auto;
+  line-height: var(--line-height-relaxed);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .manager-charts {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .manager-page {
+    padding: var(--space-4);
+  }
+
+  .manager-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .risk-overview {
+    flex-direction: column;
+  }
+
+  .manager-kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

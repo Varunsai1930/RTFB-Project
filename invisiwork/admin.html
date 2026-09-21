@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('invisiwork-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="InvisiWork — Admin panel to view all registered users and teams.">
+  <title>InvisiWork | Admin Panel</title>
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <style>
+    .admin {
+      min-height: 100vh;
+      background: var(--color-bg);
+      padding: var(--space-6) var(--space-8);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .admin__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-8);
+      flex-wrap: wrap;
+      gap: var(--space-4);
+    }
+
+    .admin__header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .admin__header-left svg {
+      color: var(--color-primary);
+    }
+
+    .admin__header h1 {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-extrabold);
+      color: var(--color-text);
+      margin: 0;
+    }
+
+    .admin__header p {
+      color: var(--color-text-muted);
+      font-size: var(--font-size-sm);
+      margin: 2px 0 0;
+    }
+
+    .admin__actions {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    /* ── Stats Row ── */
+    .admin__stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4);
+      margin-bottom: var(--space-8);
+    }
+
+    .stat-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5) var(--space-6);
+      text-align: center;
+    }
+
+    .stat-card__value {
+      font-size: var(--font-size-3xl);
+      font-weight: var(--font-weight-extrabold);
+      color: var(--color-primary);
+      line-height: 1;
+      margin-bottom: var(--space-1);
+    }
+
+    .stat-card__label {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+      font-weight: var(--font-weight-medium);
+    }
+
+    /* ── Tabs ── */
+    .admin__tabs {
+      display: flex;
+      gap: var(--space-1);
+      margin-bottom: var(--space-6);
+      border-bottom: 2px solid var(--color-border);
+    }
+
+    .admin__tab {
+      padding: var(--space-3) var(--space-5);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s ease;
+    }
+
+    .admin__tab:hover {
+      color: var(--color-text);
+    }
+
+    .admin__tab--active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+
+    /* ── Table ── */
+    .admin__table-wrap {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
+    }
+
+    .admin__table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--font-size-sm);
+    }
+
+    .admin__table thead {
+      background: var(--color-bg);
+    }
+
+    .admin__table th {
+      padding: var(--space-3) var(--space-4);
+      text-align: left;
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-muted);
+      font-size: var(--font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--color-border);
+      white-space: nowrap;
+    }
+
+    .admin__table td {
+      padding: var(--space-3) var(--space-4);
+      color: var(--color-text);
+      border-bottom: 1px solid var(--color-border);
+      white-space: nowrap;
+    }
+
+    .admin__table tbody tr:hover {
+      background: var(--color-primary-light);
+    }
+
+    .admin__table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ── Role Badge ── */
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      text-transform: capitalize;
+    }
+
+    .badge--developer {
+      background: rgba(99, 179, 237, 0.15);
+      color: #63b3ed;
+    }
+
+    .badge--manager {
+      background: rgba(72, 187, 120, 0.15);
+      color: #48bb78;
+    }
+
+    /* ── Team Code Badge ── */
+    .team-code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: var(--font-size-xs);
+      background: var(--color-bg);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      letter-spacing: 0.1em;
+    }
+
+    .team-code--none {
+      color: var(--color-text-muted);
+      font-style: italic;
+      font-family: inherit;
+      background: none;
+      border: none;
+      padding: 0;
+      letter-spacing: normal;
+    }
+
+    /* ── Loading ── */
+    .admin__loading {
+      text-align: center;
+      padding: var(--space-10);
+      color: var(--color-text-muted);
+    }
+
+    /* ── Empty State ── */
+    .admin__empty {
+      text-align: center;
+      padding: var(--space-10);
+      color: var(--color-text-muted);
+    }
+
+    /* ── Theme Toggle ── */
+    .admin__theme-toggle {
+      position: fixed;
+      top: var(--space-4);
+      right: var(--space-4);
+      background: none;
+      border: none;
+      padding: var(--space-2);
+      color: var(--color-text-muted);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .admin__theme-toggle:hover {
+      color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .admin { padding: var(--space-4); }
+      .admin__header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+  <button id="theme-toggle" class="admin__theme-toggle" aria-label="Switch to dark mode"></button>
+
+  <div class="admin">
+
+    <!-- Header -->
+    <div class="admin__header">
+      <div>
+        <div class="admin__header-left">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <h1>InvisiWork Admin</h1>
+        </div>
+        <p>View all registered users and teams</p>
+      </div>
+      <div class="admin__actions">
+        <button id="export-csv-btn" class="btn btn--primary btn--sm">
+          ⬇ Export CSV
+        </button>
+        <button id="refresh-btn" class="btn btn--outline btn--sm">
+          ↻ Refresh
+        </button>
+        <a href="dashboard.html" class="btn btn--outline btn--sm" style="text-decoration:none">
+          ← Dashboard
+        </a>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="admin__stats">
+      <div class="stat-card">
+        <div class="stat-card__value" id="stat-users">—</div>
+        <div class="stat-card__label">Total Users</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value" id="stat-developers">—</div>
+        <div class="stat-card__label">Developers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value" id="stat-managers">—</div>
+        <div class="stat-card__label">Managers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value" id="stat-teams">—</div>
+        <div class="stat-card__label">Teams</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="admin__tabs">
+      <button class="admin__tab admin__tab--active" data-tab="users">Users</button>
+      <button class="admin__tab" data-tab="teams">Teams</button>
+    </div>
+
+    <!-- Users Table -->
+    <div id="users-panel">
+      <div class="admin__loading" id="users-loading">Loading users...</div>
+      <div class="admin__table-wrap" id="users-table-wrap" style="display:none">
+        <table class="admin__table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Team Code</th>
+              <th>Created</th>
+              <th>Last Login</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Teams Table -->
+    <div id="teams-panel" style="display:none">
+      <div class="admin__loading" id="teams-loading">Loading teams...</div>
+      <div class="admin__table-wrap" id="teams-table-wrap" style="display:none">
+        <table class="admin__table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Team Name</th>
+              <th>Code</th>
+              <th>Manager</th>
+              <th>Members</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody id="teams-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/theme.js" type="module"></script>
+  <script type="module">
+    const API = 'http://localhost:5000/api/admin';
+
+    let usersData = [];
+    let teamsData = [];
+
+    async function loadUsers() {
+      const loading = document.getElementById('users-loading');
+      const wrap = document.getElementById('users-table-wrap');
+      const tbody = document.getElementById('users-tbody');
+
+      try {
+        const res = await fetch(`${API}/users`);
+        const data = await res.json();
+        usersData = data.users || [];
+
+        // Stats
+        document.getElementById('stat-users').textContent = data.total;
+        document.getElementById('stat-developers').textContent =
+          usersData.filter(u => u.role === 'developer').length;
+        document.getElementById('stat-managers').textContent =
+          usersData.filter(u => u.role === 'manager').length;
+
+        // Render table
+        tbody.innerHTML = '';
+        usersData.forEach((u, i) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${i + 1}</td>
+            <td><strong>${esc(u.name)}</strong></td>
+            <td>${esc(u.email)}</td>
+            <td><span class="badge badge--${u.role}">${u.role}</span></td>
+            <td>${u.team_id ? `<span class="team-code">${esc(u.team_id)}</span>` : '<span class="team-code--none">No team</span>'}</td>
+            <td>${formatDate(u.created_at)}</td>
+            <td>${u.last_login ? formatDate(u.last_login) : '—'}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        loading.style.display = 'none';
+        wrap.style.display = 'block';
+      } catch (e) {
+        loading.textContent = 'Failed to load users. Is the backend running?';
+      }
+    }
+
+    async function loadTeams() {
+      const loading = document.getElementById('teams-loading');
+      const wrap = document.getElementById('teams-table-wrap');
+      const tbody = document.getElementById('teams-tbody');
+
+      try {
+        const res = await fetch(`${API}/teams`);
+        const data = await res.json();
+        teamsData = data.teams || [];
+
+        document.getElementById('stat-teams').textContent = data.total;
+
+        tbody.innerHTML = '';
+        teamsData.forEach((t, i) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${i + 1}</td>
+            <td><strong>${esc(t.name)}</strong></td>
+            <td><span class="team-code">${esc(t.code)}</span></td>
+            <td>${esc(t.manager_name)} (${esc(t.manager_email)})</td>
+            <td>${t.member_count}</td>
+            <td>${formatDate(t.created_at)}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        loading.style.display = 'none';
+        wrap.style.display = 'block';
+      } catch (e) {
+        loading.textContent = 'Failed to load teams. Is the backend running?';
+      }
+    }
+
+    // Tab switching
+    document.querySelectorAll('.admin__tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.admin__tab').forEach(t => t.classList.remove('admin__tab--active'));
+        tab.classList.add('admin__tab--active');
+
+        const target = tab.dataset.tab;
+        document.getElementById('users-panel').style.display = target === 'users' ? 'block' : 'none';
+        document.getElementById('teams-panel').style.display = target === 'teams' ? 'block' : 'none';
+      });
+    });
+
+    // CSV Export
+    document.getElementById('export-csv-btn').addEventListener('click', () => {
+      window.open(`${API}/export/csv`, '_blank');
+    });
+
+    // Refresh
+    document.getElementById('refresh-btn').addEventListener('click', () => {
+      loadUsers();
+      loadTeams();
+    });
+
+    // Helpers
+    function esc(str) {
+      if (!str) return '';
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      return d.toLocaleDateString('en-IN', {
+        year: 'numeric', month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    // Load on page open
+    loadUsers();
+    loadTeams();
+  </script>
+  <div id="toast-container" class="toast-container"></div>
+</body>
+
+</html>

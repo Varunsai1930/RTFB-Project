@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    // Anti-flicker script: Apply dark mode immediately before page renders
+    (function() {
+      const savedTheme = localStorage.getItem('invisiwork-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="InvisiWork — Create your free account or sign in to continue tracking your invisible work contributions.">
+  <title>InvisiWork | Get Started</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <style>
+    /* ── Onboarding Page Specific Styles ── */
+    .onboarding {
+      min-height: 100vh;
+      background: var(--color-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--space-8) var(--space-6);
+    }
+
+    .onboarding__logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      text-decoration: none;
+      margin-bottom: var(--space-10);
+    }
+
+    .onboarding__logo-text {
+      font-weight: var(--font-weight-bold);
+      font-size: var(--font-size-lg);
+      color: var(--color-text);
+    }
+
+    /* ── Step Indicator ── */
+    .steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin: 0 0 32px;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-muted);
+    }
+
+    .step__dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-border);
+      border: 2px solid var(--color-border);
+      display: block;
+      transition: background var(--transition-base), border-color var(--transition-base);
+    }
+
+    .step--active .step__dot {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    .step--active span {
+      color: var(--color-primary);
+    }
+
+    .step__line {
+      flex: 1;
+      height: 2px;
+      background: var(--color-border);
+      min-width: 48px;
+      align-self: flex-start;
+      margin-top: 13px;
+    }
+
+    /* ── Card ── */
+    .onboarding__card {
+      max-width: 440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: var(--space-10) var(--space-8);
+    }
+
+    .onboarding__card h1 {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-extrabold);
+      margin-bottom: var(--space-2);
+      color: var(--color-text);
+    }
+
+    .onboarding__card .onboarding__sub {
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-8);
+      font-size: var(--font-size-base);
+    }
+
+    .onboarding__label {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      display: block;
+      margin-bottom: var(--space-2);
+      color: var(--color-text);
+    }
+
+    .onboarding__field {
+      margin-bottom: var(--space-4);
+    }
+
+    /* ── FIX #8: Mode switcher at bottom of card ── */
+    .onboarding__switch {
+      text-align: center;
+      margin-top: var(--space-4);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+    }
+
+    .onboarding__switch a {
+      color: var(--color-primary);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .onboarding__switch a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Divider between auth modes ── */
+    .onboarding__divider {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin: var(--space-6) 0;
+    }
+
+    .onboarding__divider::before,
+    .onboarding__divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--color-border);
+    }
+
+    .onboarding__divider span {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    /* ── Theme Toggle (top right corner) ── */
+    .onboarding__theme-toggle {
+      position: fixed;
+      top: var(--space-4);
+      right: var(--space-4);
+      background: none;
+      border: none;
+      padding: var(--space-2);
+      color: var(--color-text-muted);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .onboarding__theme-toggle:hover {
+      color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+
+    /* ── Password Requirements Hint ── */
+    .password-hint {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-1, 4px);
+      line-height: 1.4;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Theme Toggle -->
+  <button id="theme-toggle" class="onboarding__theme-toggle" aria-label="Switch to dark mode"></button>
+
+  <div class="onboarding" id="main-content">
+
+    <!-- Logo -->
+    <a href="index.html" class="onboarding__logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+      <span class="onboarding__logo-text">InvisiWork</span>
+    </a>
+
+    <!--
+      FIX #8: Step indicator is hidden by onboarding.js when mode=signin.
+      In signup mode it stays visible as before.
+    -->
+    <div class="steps">
+      <div class="step step--active">
+        <span class="step__dot"></span>
+        <span>Account</span>
+      </div>
+      <div class="step__line"></div>
+      <div class="step">
+        <span class="step__dot"></span>
+        <span>Your Team</span>
+      </div>
+      <div class="step__line"></div>
+      <div class="step">
+        <span class="step__dot"></span>
+        <span>First Log</span>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="card onboarding__card">
+
+      <!-- Heading + subtitle — swapped by onboarding.js in signin mode -->
+      <h1>Let's get you set up</h1>
+      <p class="onboarding__sub">Enter your work email to create your free account.</p>
+
+      <!--
+        FIX #8 + #12: Name field wrapped in a div so onboarding.js can
+        hide the entire block (label + input + error) in signin mode.
+        Also added id="name-error" for the validation message.
+      -->
+      <div class="onboarding__field" id="name-field">
+        <label for="name" class="onboarding__label">User Name</label>
+        <input id="name" type="text" class="input" placeholder="Alex Kumar" autocomplete="name">
+        <p class="error-msg" id="name-error" style="display:none"></p>
+      </div>
+
+      <!-- Email field — shown in both modes -->
+      <div class="onboarding__field">
+        <label for="email" class="onboarding__label">Work Email</label>
+        <input id="email" type="email" class="input" placeholder="alex@yourcompany.io" autocomplete="email">
+        <p class="error-msg" id="email-error" style="display:none"></p>
+      </div>
+
+      <!-- Password field — shown in both modes -->
+      <div class="onboarding__field">
+        <label for="password" class="onboarding__label">Password</label>
+        <input id="password" type="password" class="input" placeholder="••••••••" autocomplete="current-password">
+        <p class="error-msg" id="password-error" style="display:none"></p>
+        <p class="password-hint" id="password-hint">Min 8 characters, one uppercase letter, one number, and one special character.</p>
+      </div>
+
+      <!-- Role Selection -->
+      <div class="onboarding__field" id="role-field">
+        <label for="role" class="onboarding__label">Your Role</label>
+        <select id="role" class="input">
+          <option value="developer">Developer</option>
+          <option value="manager">Manager / Team Lead</option>
+        </select>
+      </div>
+
+      <button id="create-btn" class="btn btn--primary btn--full btn--lg" style="margin-top:var(--space-6)">
+        Create Account →
+      </button>
+
+      <!--
+        FIX #8: Switch-mode link.
+        Text + href are swapped by onboarding.js when mode=signin:
+          Signup  → "Already have an account? Sign in"
+          Signin  → "Don't have an account? Sign up"
+      -->
+      <p class="onboarding__switch">
+        <span id="switch-mode-text">Already have an account?</span>
+        <a id="switch-mode-link" href="get-started.html?mode=signin">Sign in</a>
+      </p>
+
+    </div>
+  </div>
+
+  <!-- ═══ SCRIPTS ═══ -->
+  <script src="js/theme.js" type="module"></script>
+  <script src="js/onboarding.js" type="module"></script>
+  <div id="toast-container" class="toast-container"></div>
+</body>
+
+</html>

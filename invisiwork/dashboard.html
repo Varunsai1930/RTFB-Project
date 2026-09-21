@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    // Anti-flicker script: Apply dark mode immediately before page renders
+    (function() {
+      const savedTheme = localStorage.getItem('invisiwork-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="InvisiWork — Your team activity dashboard. Track invisible work contributions, code reviews, mentoring, and more.">
+  <title>InvisiWork | Dashboard</title>
+
+  <!-- CSS (strict order) -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ═══ NAVBAR (App Variant) ═══ -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <a href="index.html" class="navbar__brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+      <span class="navbar__brand-name">InvisiWork</span>
+    </a>
+
+    <div class="navbar__right">
+      <!-- Theme Toggle -->
+      <button id="theme-toggle" class="navbar__theme-toggle" aria-label="Switch to dark mode"></button>
+
+      <!-- Nav Links -->
+      <div class="navbar__links">
+        <div class="navbar__dropdown-wrap">
+          <a href="#" class="navbar__link navbar__link--active" id="dropdown-trigger">
+            Dashboard
+            <svg class="navbar__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </a>
+          <div class="navbar__dropdown" id="dropdown-menu">
+            <a href="personal-dashboard.html" class="navbar__dropdown-item">📊 Personal Dashboard</a>
+            <a href="weekly-summary.html" class="navbar__dropdown-item">📅 Weekly Summary</a>
+            <a href="team-dashboard.html" class="navbar__dropdown-item">👥 Team Dashboard</a>
+          </div>
+        </div>
+        <a href="reports.html" class="navbar__link">Reports</a>
+        <a href="team-dashboard.html" class="navbar__link">Team</a>
+      </div>
+
+      <!-- User Avatar -->
+      <a href="profile.html" class="navbar__user" aria-label="Profile settings">
+        <div class="navbar__avatar" aria-hidden="true">AK</div>
+        <span class="navbar__user-name">Alex Kumar</span>
+      </a>
+
+      <!-- Hamburger (mobile) -->
+      <button id="hamburger-btn" class="navbar__hamburger" aria-label="Open menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div class="navbar__drawer" id="navbar-drawer">
+      <div class="navbar__drawer-links">
+        <a href="#" class="navbar__drawer-link navbar__drawer-link--active" id="drawer-dash-btn">
+          Dashboard
+          <svg class="navbar__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </a>
+        <div class="navbar__drawer-sub" id="drawer-sub">
+          <a href="personal-dashboard.html" class="navbar__drawer-sub-link">📊 Personal Dashboard</a>
+          <a href="weekly-summary.html" class="navbar__drawer-sub-link">📅 Weekly Summary</a>
+          <a href="team-dashboard.html" class="navbar__drawer-sub-link">👥 Team Dashboard</a>
+        </div>
+        <a href="reports.html" class="navbar__drawer-link">Reports</a>
+        <a href="team-dashboard.html" class="navbar__drawer-link">Team</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main id="main-content">
+
+    <!-- ── Welcome Header ── -->
+    <section class="welcome-header stagger-section">
+      <div class="welcome-header__left">
+        <!-- FIX #1: JS will replace "there" with the real name from localStorage -->
+        <h1>Welcome back, there 👋</h1>
+        <p>Here's an overview of your invisible work this week.</p>
+      </div>
+      <div class="welcome-header__right">
+      </div>
+    </section>
+
+    <!-- ── KPI Cards Row ── -->
+    <section class="kpi-row stagger-section" id="kpi-section">
+      <!-- Skeleton placeholders -->
+      <div class="skeleton-wrap" id="kpi-skeleton">
+        <div class="card skeleton-kpi">
+          <div class="skeleton skeleton--badge"></div>
+          <div class="skeleton skeleton--title"></div>
+          <div class="skeleton skeleton--text-sm"></div>
+        </div>
+        <div class="card skeleton-kpi">
+          <div class="skeleton skeleton--badge"></div>
+          <div class="skeleton skeleton--title"></div>
+          <div class="skeleton skeleton--text-sm"></div>
+        </div>
+        <div class="card skeleton-kpi">
+          <div class="skeleton skeleton--badge"></div>
+          <div class="skeleton skeleton--title"></div>
+          <div class="skeleton skeleton--text-sm"></div>
+        </div>
+        <div class="card skeleton-kpi">
+          <div class="skeleton skeleton--badge"></div>
+          <div class="skeleton skeleton--title"></div>
+          <div class="skeleton skeleton--text-sm"></div>
+        </div>
+      </div>
+
+      <!-- Real KPI Cards (hidden initially) -->
+      <div class="content-wrap" id="kpi-content">
+        <!-- Card 1: Today's Tasks -->
+        <div class="card kpi-card">
+          <div class="kpi-card__header">
+            <span class="kpi-card__icon kpi-card__icon--teal">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 11l3 3L22 4"></path>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+            </span>
+            <span class="kpi-card__label">Today's Tasks</span>
+          </div>
+          <div class="kpi-card__value" id="today-tasks-val" data-countup data-target="7">0</div>
+          <div class="kpi-card__sub" id="today-tasks-delta">...</div>
+        </div>
+
+        <!-- Card 2: This Week -->
+        <div class="card kpi-card">
+          <div class="kpi-card__header">
+            <span class="kpi-card__icon kpi-card__icon--amber">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </span>
+            <span class="kpi-card__label">This Week</span>
+          </div>
+          <div class="kpi-card__value" id="total-hours-val">0h</div>
+          <div class="kpi-card__sub">Logged work</div>
+        </div>
+
+        <!-- Card 3: Reviews Done -->
+        <div class="card kpi-card">
+          <div class="kpi-card__header">
+            <span class="kpi-card__icon kpi-card__icon--purple">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </span>
+            <span class="kpi-card__label">Total Activities</span>
+          </div>
+          <div class="kpi-card__value" id="reviews-val" data-countup data-target="0">0</div>
+          <div class="kpi-card__sub">Logged actions</div>
+        </div>
+
+        <!-- Card 4: Impact Score (Featured) -->
+        <div class="card kpi-card kpi-card--featured card--teal">
+          <span class="kpi-card__top-badge">⭐ Top 10%</span>
+          <div class="kpi-card__header">
+            <span class="kpi-card__icon kpi-card__icon--green">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+            </span>
+            <span class="kpi-card__label">Impact Score</span>
+          </div>
+          <div class="kpi-card__value" id="iwr-val" data-countup data-target="0">0</div>
+          <div class="kpi-card__sub">Score calculated</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Two-Column Main Area ── -->
+    <div class="dashboard__main stagger-section">
+
+      <!-- ACTIVITY FEED -->
+      <section class="card activity-feed" id="activity-feed">
+        <div class="feed__header">
+          <h2>Recent Activity</h2>
+          <!--
+            FIX #3: "View All" button removed — it had no destination
+            and was misleading. Removed entirely per decision.
+          -->
+        </div>
+
+        <!-- Skeleton -->
+        <div class="skeleton-wrap" id="feed-skeleton">
+          <div class="skeleton-activity-row">
+            <div class="skeleton skeleton--badge"></div>
+            <div class="skeleton skeleton--text" style="flex:1"></div>
+            <div class="skeleton skeleton--text-sm" style="width:60px"></div>
+          </div>
+          <div class="skeleton-activity-row">
+            <div class="skeleton skeleton--badge"></div>
+            <div class="skeleton skeleton--text" style="flex:1"></div>
+            <div class="skeleton skeleton--text-sm" style="width:60px"></div>
+          </div>
+          <div class="skeleton-activity-row">
+            <div class="skeleton skeleton--badge"></div>
+            <div class="skeleton skeleton--text" style="flex:1"></div>
+            <div class="skeleton skeleton--text-sm" style="width:60px"></div>
+          </div>
+          <div class="skeleton-activity-row">
+            <div class="skeleton skeleton--badge"></div>
+            <div class="skeleton skeleton--text" style="flex:1"></div>
+            <div class="skeleton skeleton--text-sm" style="width:60px"></div>
+          </div>
+        </div>
+
+        <!-- Real Content -->
+        <div class="content-wrap" id="feed-content">
+          <ul id="activity-list" class="activity-list"></ul>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="empty-state" style="display:none">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          <h3>No activity logged yet</h3>
+          <p>Use the Log Work button to track your first invisible contribution.</p>
+          <button class="btn btn--primary" id="empty-log-btn">Log Your First Activity →</button>
+        </div>
+      </section>
+
+      <!-- QUICK STATS PANEL -->
+      <aside class="card quick-stats" id="quick-stats">
+        <h3 style="font-weight:700;margin-bottom:16px">This Week</h3>
+
+        <!-- Progress bar -->
+        <div class="qs__progress-section">
+          <div class="qs__progress-header">
+            <span>Hours Logged</span>
+            <span class="qs__progress-value" id="qs-hours-value">0h / 40h</span>
+          </div>
+          <div class="qs__progress-track">
+            <div class="qs__progress-fill" id="hours-progress" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Top category badge -->
+        <div class="qs__section">
+          <p class="qs__label">Top Category</p>
+          <span class="badge badge--review">Code Review</span>
+        </div>
+
+        <!-- Motivational insight -->
+        <div class="qs__insight">
+          <p>You're in the top 15% of your team this week 🚀</p>
+        </div>
+
+        <!-- IWR quick indicator -->
+        <div class="qs__section">
+          <p class="qs__label">Invisible Work Ratio</p>
+          <div class="qs__iwr">
+            <span class="qs__iwr-value">78%</span>
+            <span class="qs__iwr-badge"
+              style="background:#fef9c3;color:#a16207;padding:2px 10px;border-radius:999px;font-size:0.75rem;font-weight:600">Elevated</span>
+          </div>
+          <div class="qs__progress-track" style="margin-top:8px">
+            <div class="qs__progress-fill" id="iwr-progress" style="width:0%;background:var(--color-warning)"></div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <a href="personal-dashboard.html" class="btn btn--outline btn--full" style="margin-top:20px;font-size:0.875rem">
+          View Full Analytics →
+        </a>
+      </aside>
+    </div>
+  </main>
+
+  <!-- ═══ FLOATING LOG WORK BUTTON ═══ -->
+  <button id="float-log-btn" class="float-btn">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <line x1="12" y1="5" x2="12" y2="19"></line>
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+    </svg>
+    Log Work
+  </button>
+
+  <!-- ═══ QUICK LOG PANEL ═══ -->
+  <div id="panel-overlay" class="panel-overlay"></div>
+  <aside id="quick-log-panel" class="quick-log-panel">
+    <div class="qlp__header">
+      <h3>Quick Log</h3>
+      <button id="close-panel-btn" class="qlp__close" aria-label="Close panel">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="qlp__body">
+      <p class="qlp__section-label">Category</p>
+      <div class="qlp__category-grid" id="category-grid">
+        <button type="button" data-category="review">Code Review</button>
+        <button type="button" data-category="mentoring">Mentoring</button>
+        <button type="button" data-category="debug">Debugging</button>
+        <button type="button" data-category="docs">Documentation</button>
+        <button type="button" data-category="meeting">Meeting</button>
+        <button type="button" data-category="planning">Planning</button>
+        <button type="button" data-category="custom" id="custom-category-btn">+ Custom</button>
+      </div>
+      <div class="qlp__custom-category" id="custom-category-wrap" style="display:none; margin-top:10px">
+        <input id="custom-category-input" type="text" class="input" placeholder="Enter your category name…"
+          maxlength="30">
+      </div>
+
+      <p class="qlp__section-label" style="margin-top:20px">Description</p>
+      <textarea id="log-desc" class="input" rows="3" placeholder="Briefly describe what you did..."></textarea>
+      <p id="log-desc-error" class="error-msg" style="display:none">Description is required.</p>
+
+      <p class="qlp__section-label" style="margin-top:16px">Duration (minutes)</p>
+      <input id="log-duration" type="number" class="input" value="30" min="5" max="480">
+
+      <button id="log-submit-btn" class="btn btn--primary btn--full" style="margin-top:24px">Log Work →</button>
+    </div>
+  </aside>
+
+  <!-- ═══ TOAST CONTAINER ═══ -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ═══ SCRIPTS ═══ -->
+  <script src="js/auth-guard.js" type="module"></script>
+  <script src="js/theme.js" type="module"></script>
+  <script src="js/navbar.js" type="module"></script>
+  <script src="js/dashboard.js" type="module"></script>
+</body>
+
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    // Anti-flicker script: Apply dark mode immediately before page renders
+    (function() {
+      const savedTheme = localStorage.getItem('invisiwork-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="InvisiWork — Manager analytics dashboard. View team-wide metrics, burnout risk, and individual developer performance.">
+  <title>InvisiWork | Manager Dashboard</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/manager.css">
+
+  <!-- Plotly CDN -->
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+
+<body>
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <a href="index.html" class="navbar__brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+      <span class="navbar__brand-name">InvisiWork</span>
+    </a>
+    <div class="navbar__right">
+      <button id="theme-toggle" class="navbar__theme-toggle" aria-label="Switch to dark mode"></button>
+      <div class="navbar__links">
+        <a href="manager-dashboard.html" class="navbar__link navbar__link--active">Team Analytics</a>
+        <a href="reports.html" class="navbar__link">Reports</a>
+      </div>
+      <a href="profile.html" class="navbar__user" aria-label="Profile settings">
+        <div class="navbar__avatar" id="nav-avatar" aria-hidden="true">M</div>
+        <span class="navbar__user-name" id="nav-name">Manager</span>
+      </a>
+      <button id="hamburger-btn" class="navbar__hamburger" aria-label="Open menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="navbar__drawer" id="navbar-drawer">
+      <div class="navbar__drawer-links">
+        <a href="manager-dashboard.html" class="navbar__drawer-link navbar__drawer-link--active">Team Analytics</a>
+        <a href="reports.html" class="navbar__drawer-link">Reports</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main id="main-content" class="manager-page">
+
+    <!-- ── Header ── -->
+    <section class="manager-header stagger-section">
+      <div>
+        <h1>Team Analytics</h1>
+        <p class="manager-header__sub" id="team-subtitle">Loading team data...</p>
+      </div>
+      <div class="manager-header__actions">
+        <a href="dashboard.html" class="btn btn--outline btn--sm">← Dashboard</a>
+      </div>
+    </section>
+
+    <!-- ── Skeleton Loading ── -->
+    <div id="manager-skeleton">
+      <div class="manager-kpi-row">
+        <div class="card skeleton-kpi"><div class="skeleton skeleton--title"></div><div class="skeleton skeleton--text-sm"></div></div>
+        <div class="card skeleton-kpi"><div class="skeleton skeleton--title"></div><div class="skeleton skeleton--text-sm"></div></div>
+        <div class="card skeleton-kpi"><div class="skeleton skeleton--title"></div><div class="skeleton skeleton--text-sm"></div></div>
+        <div class="card skeleton-kpi"><div class="skeleton skeleton--title"></div><div class="skeleton skeleton--text-sm"></div></div>
+      </div>
+    </div>
+
+    <!-- ── Content (hidden until loaded) ── -->
+    <div id="manager-content" class="content-wrap">
+
+      <!-- KPI Row -->
+      <div class="manager-kpi-row stagger-section">
+        <div class="card manager-kpi">
+          <div class="manager-kpi__value" id="kpi-team-size">—</div>
+          <div class="manager-kpi__label">Team Members</div>
+        </div>
+        <div class="card manager-kpi">
+          <div class="manager-kpi__value" id="kpi-avg-iwr">—</div>
+          <div class="manager-kpi__label">Avg. IWR</div>
+        </div>
+        <div class="card manager-kpi">
+          <div class="manager-kpi__value" id="kpi-avg-bcs">—</div>
+          <div class="manager-kpi__label">Avg. Burnout Risk</div>
+        </div>
+        <div class="card manager-kpi">
+          <div class="manager-kpi__value" id="kpi-avg-pii">—</div>
+          <div class="manager-kpi__label">Avg. Impact Score</div>
+        </div>
+      </div>
+
+      <!-- Risk Overview -->
+      <div class="risk-overview stagger-section">
+        <div class="risk-card risk-card--low">
+          <div class="risk-card__count" id="risk-low">0</div>
+          <div class="risk-card__label">Low Risk</div>
+        </div>
+        <div class="risk-card risk-card--moderate">
+          <div class="risk-card__count" id="risk-moderate">0</div>
+          <div class="risk-card__label">Moderate Risk</div>
+        </div>
+        <div class="risk-card risk-card--high">
+          <div class="risk-card__count" id="risk-high">0</div>
+          <div class="risk-card__label">High Risk</div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="manager-charts stagger-section">
+        <!-- IWR Heatmap -->
+        <div class="card chart-card">
+          <h3 class="chart-card__title">IWR Heatmap</h3>
+          <p class="chart-card__sub">Invisible Work Ratio per developer per week</p>
+          <div class="chart-container" id="iwr-heatmap"></div>
+        </div>
+
+        <!-- Burnout Risk Timeline -->
+        <div class="card chart-card">
+          <h3 class="chart-card__title">Burnout Risk Timeline</h3>
+          <p class="chart-card__sub">Risk level distribution over the past 8 weeks</p>
+          <div class="chart-container" id="burnout-timeline"></div>
+        </div>
+      </div>
+
+      <!-- PII Ranking (full width) -->
+      <div class="manager-chart-full stagger-section">
+        <div class="card chart-card">
+          <h3 class="chart-card__title">Impact Score Ranking</h3>
+          <p class="chart-card__sub">Developers ranked by Personal Impact Index — color encodes burnout risk</p>
+          <div class="chart-container" id="pii-ranking" style="min-height:250px;"></div>
+        </div>
+      </div>
+
+      <!-- Developer Table -->
+      <section class="dev-table-section stagger-section">
+        <h2>Team Members</h2>
+        <div class="dev-table-wrap">
+          <table class="dev-table">
+            <thead>
+              <tr>
+                <th>Developer</th>
+                <th>IWR</th>
+                <th>BCS</th>
+                <th>PII</th>
+                <th>Hours</th>
+                <th>Risk Level</th>
+              </tr>
+            </thead>
+            <tbody id="dev-table-body">
+              <!-- JS renders rows here -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Empty State (shown when no team) -->
+      <div id="empty-state" class="manager-empty" style="display:none;">
+        <div class="manager-empty__icon">👥</div>
+        <h2>No team yet</h2>
+        <p>Create a team and invite developers to see team-wide analytics here.</p>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ═══ SCRIPTS ═══ -->
+  <script src="js/auth-guard.js" type="module"></script>
+  <script src="js/theme.js" type="module"></script>
+  <script src="js/navbar.js" type="module"></script>
+  <script src="js/manager-dashboard.js" type="module"></script>
+</body>
+
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('invisiwork-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="InvisiWork — Manager Dashboard is under construction.">
+  <title>InvisiWork | Under Construction</title>
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+
+  <style>
+    .uc-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--color-bg);
+      padding: var(--space-8);
+    }
+
+    .uc-card {
+      text-align: center;
+      max-width: 680px;
+      width: 100%;
+      padding: 64px 48px;
+      border-radius: var(--radius-xl);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      animation: uc-fadeUp 0.6s ease-out both;
+    }
+
+    @keyframes uc-fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .uc-icon {
+      font-size: 4.5rem;
+      margin-bottom: var(--space-4);
+    }
+
+    @keyframes uc-bounce {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+
+    .uc-title {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: var(--space-3);
+      letter-spacing: -0.02em;
+    }
+
+    .uc-subtitle {
+      font-size: var(--font-size-base);
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      margin-bottom: var(--space-8);
+    }
+
+    .uc-bar-track {
+      width: 80%;
+      margin: 0 auto var(--space-8);
+      height: 6px;
+      border-radius: 999px;
+      background: var(--color-border);
+      overflow: hidden;
+    }
+
+    .uc-bar-fill {
+      width: 45%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light, #6ee7b7));
+      animation: uc-progress 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes uc-progress {
+      from { width: 25%; }
+      to   { width: 70%; }
+    }
+
+    .uc-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: var(--radius-md);
+      background: var(--color-primary);
+      color: #fff;
+      font-weight: 600;
+      font-size: var(--font-size-sm);
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .uc-back-btn:hover {
+      background: var(--color-primary-hover, #059669);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="uc-page">
+    <div class="uc-card">
+      <div class="uc-icon">🚧</div>
+      <h1 class="uc-title">Under Construction</h1>
+      <p class="uc-subtitle">
+        The Manager Dashboard is currently being built.<br>
+        Please check back soon — we're working hard to bring it to you!
+      </p>
+      <div class="uc-bar-track">
+        <div class="uc-bar-fill"></div>
+      </div>
+      <a href="get-started.html" class="uc-back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        Back to Sign In
+      </a>
+    </div>
+  </div>
+
+  <script src="js/theme.js" type="module"></script>
+  <div id="toast-container" class="toast-container"></div>
+</body>
+
+</html>

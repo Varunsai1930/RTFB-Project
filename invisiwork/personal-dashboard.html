@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    // Anti-flicker script: Apply dark mode immediately before page renders
+    (function() {
+      const savedTheme = localStorage.getItem('invisiwork-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="InvisiWork — Personal analytics dashboard. Track your IWR, Burnout Score, and Impact Index.">
+  <title>InvisiWork | Personal Dashboard</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/personal.css">
+
+  <!-- Plotly.js CDN -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js" defer></script>
+</head>
+
+<body>
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ═══ NAVBAR (App Variant) ═══ -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <a href="index.html" class="navbar__brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+      <span class="navbar__brand-name">InvisiWork</span>
+    </a>
+
+    <div class="navbar__right">
+      <button id="theme-toggle" class="navbar__theme-toggle" aria-label="Switch to dark mode"></button>
+      <div class="navbar__links">
+        <div class="navbar__dropdown-wrap">
+          <a href="#" class="navbar__link navbar__link--active" id="dropdown-trigger">
+            Dashboard
+            <svg class="navbar__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </a>
+          <div class="navbar__dropdown" id="dropdown-menu">
+            <a href="personal-dashboard.html" class="navbar__dropdown-item">📊 Personal Dashboard</a>
+            <a href="weekly-summary.html" class="navbar__dropdown-item">📅 Weekly Summary</a>
+            <a href="team-dashboard.html" class="navbar__dropdown-item">👥 Team Dashboard</a>
+          </div>
+        </div>
+        <a href="#" class="navbar__link">Reports</a>
+        <a href="team-dashboard.html" class="navbar__link">Team</a>
+      </div>
+      <a href="profile.html" class="navbar__user" aria-label="Profile settings">
+        <div class="navbar__avatar" aria-hidden="true">AK</div>
+        <span class="navbar__user-name">Alex Kumar</span>
+      </a>
+      <button id="hamburger-btn" class="navbar__hamburger" aria-label="Open menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="navbar__drawer" id="navbar-drawer">
+      <div class="navbar__drawer-links">
+        <a href="#" class="navbar__drawer-link navbar__drawer-link--active" id="drawer-dash-btn">
+          Dashboard
+          <svg class="navbar__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </a>
+        <div class="navbar__drawer-sub" id="drawer-sub">
+          <a href="personal-dashboard.html" class="navbar__drawer-sub-link">📊 Personal Dashboard</a>
+          <a href="weekly-summary.html" class="navbar__drawer-sub-link">📅 Weekly Summary</a>
+          <a href="team-dashboard.html" class="navbar__drawer-sub-link">👥 Team Dashboard</a>
+        </div>
+        <a href="#" class="navbar__drawer-link">Reports</a>
+        <a href="team-dashboard.html" class="navbar__drawer-link">Team</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main id="main-content">
+
+    <!-- ── Page Header ── -->
+    <section class="page-header stagger-section">
+      <div>
+        <h1>Personal Analytics</h1>
+        <p>Your invisible work metrics — Week of Mar 17–23, 2025</p>
+      </div>
+      <a href="dashboard.html" class="btn btn--outline">← Back to Dashboard</a>
+    </section>
+
+    <!-- ── Top Metrics Row ── -->
+    <div class="metrics-top-row stagger-section" id="metrics-section">
+
+      <!-- Skeleton -->
+      <div class="skeleton-wrap" id="metrics-skeleton">
+        <div class="card">
+          <div class="skeleton skeleton--circle" style="margin-bottom:16px"></div>
+          <div class="skeleton skeleton--text" style="width:60%;margin:0 auto"></div>
+        </div>
+        <div class="card">
+          <div class="skeleton skeleton--title" style="width:40%;margin:0 auto 16px"></div>
+          <div class="skeleton skeleton--bar" style="width:100%"></div>
+        </div>
+        <div class="card">
+          <div class="skeleton skeleton--title" style="width:40%;margin:0 auto 16px"></div>
+          <div class="skeleton skeleton--bar" style="width:80%"></div>
+        </div>
+      </div>
+
+      <!-- Real Content -->
+      <div class="content-wrap" id="metrics-content">
+
+        <!-- IWR Card — Circular Gauge -->
+        <div class="card metric-card metric-card--gauge">
+          <div class="gauge-container">
+            <svg viewBox="0 0 120 120" width="120" height="120" class="gauge-svg" aria-hidden="true">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="var(--color-border)" stroke-width="10"></circle>
+              <circle id="iwr-arc" cx="60" cy="60" r="50" fill="none" stroke="var(--color-primary)" stroke-width="10"
+                stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314" transform="rotate(-90 60 60)">
+              </circle>
+            </svg>
+            <div class="gauge-center">
+              <span class="gauge-value" id="iwr-gauge-val">0</span><span class="gauge-percent">%</span>
+            </div>
+          </div>
+          <p class="metric-card__label">Invisible Work Ratio</p>
+          <span class="metric-card__badge" style="background:var(--color-warning-bg);color:#a16207">⚠️ Elevated</span>
+        </div>
+
+        <!-- BCS Card — Burnout Correlation Score -->
+        <div class="card metric-card metric-card--score">
+          <div class="score-large" id="bcs-val">0</div>
+          <span class="metric-card__badge metric-card__badge--success">Low Risk</span>
+          <div class="score-bar-track">
+            <div class="score-bar-fill" id="bcs-bar" style="width:0%;background:var(--color-success)"></div>
+          </div>
+          <div class="score-thresholds">
+            <span>Low &lt;40</span>
+            <span>Moderate 40–70</span>
+            <span>High &gt;70</span>
+          </div>
+          <p class="metric-card__label" style="margin-top:var(--space-4)">Burnout Correlation Score</p>
+        </div>
+
+        <!-- PII Card — Personal Impact Index -->
+        <div class="card metric-card metric-card--pii">
+          <div class="score-large" id="pii-val">0</div>
+          <p class="metric-card__label">Personal Impact Index</p>
+          <div class="pii-breakdown" id="pii-top-bars">
+            <!-- JS renders top 3 contributing categories here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Activity Breakdown (CSS Bars) ── -->
+    <section class="breakdown-section card stagger-section">
+      <h2>Activity Breakdown</h2>
+      <p class="muted" style="margin-bottom:var(--space-6)">This week's effort distribution by category</p>
+      <div id="breakdown-chart" class="breakdown-chart"></div>
+    </section>
+
+    <!-- ── Work Distribution Donut (Plotly) ── -->
+    <section class="donut-section card stagger-section">
+      <h2>Work Category Distribution</h2>
+      <div id="donut-chart" style="height:360px;"></div>
+    </section>
+
+  </main>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ═══ SCRIPTS ═══ -->
+  <script src="js/auth-guard.js" type="module"></script>
+  <script src="js/theme.js" type="module"></script>
+  <script src="js/navbar.js" type="module"></script>
+  <script src="js/personal.js" type="module"></script>
+</body>
+
+</html>

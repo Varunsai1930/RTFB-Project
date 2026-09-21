@@ -1,0 +1,575 @@
+═══════════════════════════════════════════════════════════════
+PROJECT: INVISIBLE WORK ANALYTICS SYSTEM (IWAS)
+BUILD BRIEF FOR AI-ASSISTED DEVELOPMENT
+═══════════════════════════════════════════════════════════════
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 1 — PROJECT OVERVIEW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Build a full-stack web application called the Invisible Work Analytics System (IWAS) — a data-driven productivity platform for software development teams that captures, classifies, and visualizes the full spectrum of developer effort, including work that traditional productivity metrics (commits, tickets, story points) completely miss.
+
+The core insight this system operationalizes: developers spend significant time on invisible work — code reviews, debugging, mentoring teammates, knowledge sharing, handling production incidents, learning new technologies — that never appears in sprint dashboards or performance reviews. IWAS makes this work visible, measurable, and actionable.
+
+PRIMARY USERS:
+- Developers — log daily activities, view personal dashboards, track their own IWR and burnout risk
+- Managers / Team Leads — view team-wide dashboards, compare effort distribution across developers, identify burnout risk early
+
+CORE VALUE PROPOSITION:
+Replace distorted productivity pictures with a fair, complete, data-driven view of actual developer contribution. Reduce burnout risk by surfacing effort patterns before they become crises.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 2 — TECH STACK (HARD CONSTRAINTS — NON-NEGOTIABLE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FRONTEND: Vanilla HTML5 / CSS3 / ES6+ JavaScript ONLY
+- Zero frameworks: no React, Vue, Angular, Svelte
+- Zero UI libraries: no Bootstrap, Tailwind, Material UI
+- Layout: CSS Grid + Flexbox + CSS custom properties (variables) exclusively
+- JS: ES6 modules, async/await, Fetch API for all backend communication
+- No jQuery under any circumstances
+- Plotly.js via CDN for interactive chart embedding
+- Fully responsive, mobile-first
+
+BACKEND: Python + Flask
+- Application Factory pattern: create_app() with Blueprints per module
+- RESTful API endpoints, proper HTTP verbs, JSON responses
+- All errors return structured JSON: {"error": "description", "status": 4xx}
+- python-dotenv for all environment variables
+- flask-cors enabled for frontend communication
+- Flask integrates: frontend serving, MongoDB, MySQL, Google Sheets API, Dash
+
+DATA COLLECTION: Google Forms + Google Sheets API
+- Google Forms: primary developer activity logging interface
+- Google Sheets: live data storage backend
+- Python access via gspread + google-auth
+- Service Account JSON key loaded from environment variable (never hardcoded)
+- All Sheet data immediately converted to Pandas DataFrames on ingestion
+- Fault-tolerant: handle API rate limits, empty rows, missing fields gracefully
+
+DATA PROCESSING: Python — Pandas + NumPy + SciPy
+- Pandas: all data cleaning, transformation, structuring — DataFrames as standard
+- NumPy: all numerical computations and array operations
+- SciPy: all statistical analysis (document which scipy module + function used and why)
+- Vectorized operations always — never row iteration via Python for loops
+- Validate and clean all incoming data before any processing
+
+VISUALIZATION: Matplotlib + Plotly + Dash
+- Matplotlib: static charts exported as PNG/PDF for reports
+- Plotly (plotly.express + plotly.graph_objects): interactive charts embedded as HTML divs or JSON
+- Dash: web-based analytics dashboard framework, modular layout + callbacks separated
+- All visualization logic lives in /charts package — never mixed into routes or data logic
+- Every dataset gets both: static Matplotlib export AND interactive Plotly version
+
+DATABASE: MongoDB + MySQL (both required)
+- MongoDB (via PyMongo): activity_logs collection, developer_profiles collection — document-style, flexible, unstructured data
+  - Every document includes created_at and updated_at timestamps
+  - Collection names: lowercase, plural, snake_cased
+- MySQL (via Flask-SQLAlchemy): structured relational data — user accounts, team structures, metric snapshots
+  - Always use migrations for schema management
+  - Parameterized queries always — zero raw SQL string formatting
+- Never store passwords in plain text — bcrypt for all password hashing
+- No SELECT * in production logic — use projections and field lists
+
+DEVELOPMENT TOOLS:
+- Python 3.10+ syntax throughout
+- PEP 8 strict compliance — code must pass flake8 and black formatting
+- venv for dependency management
+- requirements.txt provided
+- Git-ready: .gitignore covering venv/, .env, __pycache__/, .ipynb_checkpoints/, *.pyc
+- Jupyter Notebooks for EDA only — all finalized logic refactored into Python modules
+
+CROSS-PLATFORM REQUIREMENT:
+- All file paths via pathlib.Path — zero hardcoded OS-specific paths
+- No backslashes in paths. No hardcoded /home/user or C:\Users
+- Setup scripts must work on Windows, Linux, macOS
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 3 — FULL FEATURE SET BY MODULE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MODULE 1 — AUTHENTICATION
+- Developer and Manager roles with distinct access levels
+- Registration: name, email, password (bcrypt hashed), role selection, team assignment
+- Login: JWT-based session tokens stored in memory (no localStorage — use sessionStorage or in-memory JS state)
+- Role-based route protection: /dashboard/* requires developer login, /manager/* requires manager role
+- Logout clears session, redirects to login
+
+MODULE 2 — DAILY ACTIVITY LOGGING (Developer-facing)
+- Primary input: Google Form (external link + embedded iframe option on the page)
+- Google Form fields to capture:
+  - Developer name / email
+  - Date
+  - Activity type (multi-select): Feature Development, Bug Fix, Code Review, Debugging, Peer Help / Mentoring, Knowledge Sharing, Documentation, Production Incident, Learning / Research, Meetings, Refactoring, Infrastructure Work, Testing
+  - Time spent per activity (in hours, 0.5 increments)
+  - Stress/Energy level at end of day (1–10 scale)
+  - Notes (optional free text)
+- After form submission, Google Sheets receives the data automatically
+- Flask polls or receives webhook trigger to fetch latest Sheet data
+- Data ingested into MongoDB (raw activity_logs) and processed through classification engine
+
+MODULE 3 — WORK CLASSIFICATION ENGINE (Python backend)
+- Classify each activity as Visible Work or Invisible Work using predefined mapping:
+  VISIBLE: Feature Development, Bug Fix (when ticket-tracked), Testing (formal QA)
+  INVISIBLE: Code Review, Debugging (non-ticket), Peer Help, Mentoring, Knowledge Sharing, Documentation, Production Incident response, Learning/Research, Refactoring, Infrastructure, Meetings
+- Classification rules stored as a configurable Python dict/JSON — not hardcoded logic
+- Classification result stored back into MongoDB alongside original log entry
+- Edge cases handled: unrecognized activity types default to "Uncategorized" with a flag
+
+MODULE 4 — CUSTOM METRICS ENGINE (Python backend)
+Implement these two custom metrics with full mathematical precision:
+
+METRIC 1 — Invisible Work Ratio (IWR):
+  IWR = (Total Invisible Work Hours) / (Total Work Hours) × 100
+  - Computed per developer per day, per week, per month
+  - Stored in MySQL as metric_snapshots table for trend querying
+  - Threshold flags: IWR > 60% = High Invisible Load (flagged yellow), IWR > 75% = Critical (flagged red)
+
+METRIC 2 — Burnout Correlation Score (BCS):
+  BCS = weighted composite of:
+    - 7-day rolling average of daily hours logged (weight: 0.3)
+    - 7-day rolling average of stress/energy level (inverted: 10 - score) (weight: 0.4)
+    - IWR trend over 7 days (increasing IWR = higher risk) (weight: 0.3)
+  Normalized to 0–100 scale. Score > 70 = burnout risk alert.
+  Use scipy.stats.pearsonr to calculate correlation between invisible work hours and stress level over rolling 14-day windows.
+  Document: using scipy.stats.pearsonr for Pearson correlation between invisible work load and developer stress index.
+
+Additional computed metrics:
+  - Productivity Invisibility Index (PII): ratio of invisible work hours to total visible output units (commits + tickets) per week
+  - Daily effort distribution breakdown (visible vs invisible as % per day)
+  - Week-over-week IWR change (trend direction)
+
+MODULE 5 — DEVELOPER PERSONAL DASHBOARD (/dashboard)
+Page layout: sidebar navigation + main content area
+
+SIDEBAR:
+  - User profile (name, role, team)
+  - Navigation links: Overview, My Metrics, Weekly Report, Activity Log, Settings
+
+MAIN CONTENT — OVERVIEW TAB:
+  - Summary cards (4 in a grid row):
+    - Today's IWR (%)
+    - Today's Hours Logged
+    - Current BCS Score with risk level label
+    - Streak: days logged consecutively
+  - Interactive Plotly chart: Daily Visible vs Invisible Work Hours (stacked bar, last 14 days)
+  - Interactive Plotly chart: IWR trend line (last 30 days) with threshold markers at 60% and 75%
+  - Interactive Plotly chart: Stress/Energy level over time (line, last 14 days) overlaid with BCS trend
+
+MAIN CONTENT — MY METRICS TAB:
+  - IWR gauge chart (Plotly go.Indicator)
+  - BCS gauge chart with color zones (green < 40, yellow 40–70, red > 70)
+  - Activity type breakdown: Plotly donut chart (visible vs invisible subcategories)
+  - Matplotlib static export button: downloads PNG of full weekly summary chart
+
+MAIN CONTENT — WEEKLY REPORT TAB:
+  - Auto-generated weekly summary:
+    - Total hours logged
+    - Visible vs invisible split
+    - Peak invisible work day
+    - BCS trend (improving/worsening)
+    - Top 3 invisible activities by time
+  - Downloadable as PNG (Matplotlib) — "Export Report" button
+
+MAIN CONTENT — ACTIVITY LOG TAB:
+  - Table of all logged activities (paginated, 20 per page)
+  - Columns: Date, Activity, Type, Hours, Classification (Visible/Invisible), Stress Level
+  - Filter by: date range, work type, classification
+  - Sort by any column
+
+MODULE 6 — MANAGER TEAM DASHBOARD (/manager)
+Access: Manager role only. Redirects developers to /dashboard.
+
+TEAM OVERVIEW:
+  - Team selector dropdown (if manager oversees multiple teams)
+  - Summary row cards:
+    - Team size (active loggers this week)
+    - Team average IWR this week
+    - Number of developers in burnout risk zone (BCS > 70)
+    - Total team invisible work hours this week
+
+TEAM ANALYTICS — CHARTS:
+  - Plotly grouped bar chart: IWR per developer (current week) — sorted descending, threshold line at 60%
+  - Plotly heatmap: Developer × Day matrix — cell color = IWR value — shows effort distribution patterns
+  - Plotly scatter plot: BCS vs IWR per developer — bubble size = total hours — identify outliers
+  - Plotly line chart: Team average IWR trend over last 8 weeks
+
+INDIVIDUAL DEVELOPER DRILLDOWN:
+  - Click any developer name/bar in the team charts
+  - Side panel or modal opens showing:
+    - That developer's 14-day IWR trend
+    - BCS score with risk classification
+    - Activity breakdown donut chart
+    - Recommended action (auto-generated text based on metric thresholds)
+
+COMPARE VIEW:
+  - Select 2–4 developers from a multi-select
+  - Plotly overlay line chart: IWR trends side by side
+  - Plotly side-by-side bar: visible vs invisible breakdown comparison
+
+MODULE 7 — DASH ANALYTICS DASHBOARD (/analytics)
+Standalone Dash app mounted within Flask at /analytics route.
+Modular structure: layout.py + callbacks.py separated.
+
+DASH LAYOUT:
+  - Header with date range picker and developer/team filter dropdowns
+  - Tab 1: IWR Analysis — all IWR charts (individual + team)
+  - Tab 2: Burnout Risk Monitor — BCS scores, risk distribution, 7-day trend
+  - Tab 3: Effort Distribution — visible vs invisible breakdown, activity type heatmap
+  - Tab 4: Correlation Analysis — scatter plots, Pearson r values displayed, scipy-computed
+
+All Dash charts fully interactive: hover tooltips, click-to-filter, zoom/pan enabled.
+
+MODULE 8 — GOOGLE SHEETS DATA PIPELINE (Python backend service)
+- sheets_service.py: authenticates via Service Account from env var GOOGLE_SERVICE_ACCOUNT_JSON
+- Polls the connected Google Sheet every 5 minutes (configurable interval in .env)
+- Reads new rows since last processed timestamp (stored in MongoDB as pipeline_state collection)
+- Converts raw Sheet rows to Pandas DataFrame immediately
+- Passes DataFrame to data_cleaner.py → classifier.py → metrics_engine.py pipeline
+- Writes processed metrics back to MySQL metric_snapshots
+- Error handling: exponential backoff on API rate limit (429), skip and log malformed rows, alert on consecutive failures > 3
+
+MODULE 9 — STATIC REPORT EXPORT (Matplotlib)
+- report_generator.py in /charts package
+- Generates a comprehensive weekly PDF/PNG report per developer:
+  - Page 1: IWR gauge + BCS gauge + summary stats
+  - Page 2: 14-day stacked bar (visible vs invisible hours)
+  - Page 3: Activity type breakdown pie + stress trend line
+- Manager can trigger bulk export for entire team
+- Files saved to /reports/ directory using pathlib — cross-platform safe
+
+MODULE 10 — SETTINGS & CONFIGURATION
+- Developer settings: notification preferences, default view, Google Form link display
+- Admin/Manager settings:
+  - Configure activity classification rules (view/edit the visible/invisible mapping)
+  - Set IWR threshold values (default 60% yellow, 75% red — configurable)
+  - Set BCS risk threshold (default 70)
+  - Manage team members: add, remove, assign roles
+  - Google Sheets connection: paste Sheet ID, verify connection, view last sync timestamp
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 4 — FOLDER & FILE STRUCTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Generate this exact structure from the first scaffold — do not deviate:
+
+iwas/
+│
+├── app/
+│   ├── __init__.py                  # create_app() factory, register blueprints
+│   ├── config.py                    # Config classes (Development, Production) via dotenv
+│   │
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── auth.py                  # Blueprint: /auth — login, register, logout
+│   │   ├── dashboard.py             # Blueprint: /dashboard — developer views
+│   │   ├── manager.py               # Blueprint: /manager — manager views
+│   │   ├── api.py                   # Blueprint: /api — all REST endpoints
+│   │   └── analytics.py             # Blueprint: /analytics — Dash app mount
+│   │
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── mongo_models.py          # PyMongo collection schemas and helpers
+│   │   └── sql_models.py            # SQLAlchemy ORM models (User, Team, MetricSnapshot)
+│   │
+│   ├── data/
+│   │   ├── __init__.py
+│   │   ├── sheets_service.py        # Google Sheets API auth + data fetch
+│   │   ├── data_cleaner.py          # Pandas-based validation and cleaning
+│   │   ├── classifier.py            # Work classification engine
+│   │   └── pipeline.py             # Orchestrates end-to-end data pipeline
+│   │
+│   ├── analytics/
+│   │   ├── __init__.py
+│   │   ├── metrics_engine.py        # IWR, BCS, PII calculations (NumPy + SciPy)
+│   │   └── statistical_analysis.py  # scipy.stats correlations and trend analysis
+│   │
+│   ├── charts/
+│   │   ├── __init__.py
+│   │   ├── plotly_charts.py         # All Plotly interactive charts
+│   │   ├── matplotlib_charts.py     # All Matplotlib static charts
+│   │   ├── dash_app.py              # Dash app layout (modular)
+│   │   └── dash_callbacks.py        # All Dash callbacks (separated from layout)
+│   │
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── auth_helpers.py          # JWT generation, bcrypt helpers
+│   │   ├── response_helpers.py      # Standardized JSON response builders
+│   │   └── validators.py            # Input validation utilities
+│   │
+│   └── report_generator.py          # Matplotlib PDF/PNG weekly report builder
+│
+├── frontend/
+│   ├── index.html                   # Landing / login page
+│   ├── dashboard.html               # Developer personal dashboard
+│   ├── manager.html                 # Manager team dashboard
+│   ├── settings.html                # Settings page
+│   │
+│   ├── css/
+│   │   ├── variables.css            # All CSS custom properties (design tokens)
+│   │   ├── base.css                 # Reset + typography
+│   │   ├── layout.css               # Grid + Flexbox layout system
+│   │   ├── components.css           # Cards, buttons, badges, tables, modals
+│   │   ├── dashboard.css            # Developer dashboard specific styles
+│   │   ├── manager.css              # Manager dashboard specific styles
+│   │   └── responsive.css           # All media queries (mobile-first)
+│   │
+│   └── js/
+│       ├── main.js                  # App initialization, global state
+│       ├── auth.js                  # Login/register/logout logic
+│       ├── dashboard.js             # Developer dashboard data fetching + rendering
+│       ├── manager.js               # Manager dashboard data fetching + rendering
+│       ├── charts.js                # Plotly chart rendering functions
+│       ├── api.js                   # Centralized Fetch API wrapper (all backend calls)
+│       └── utils.js                 # Shared JS utility functions
+│
+├── notebooks/
+│   └── eda.ipynb                    # EDA notebook (exploration only — not production)
+│
+├── reports/                         # Generated Matplotlib report outputs
+│   └── .gitkeep
+│
+├── migrations/                      # Flask-Migrate / Alembic MySQL migrations
+│
+├── tests/
+│   ├── test_classifier.py
+│   ├── test_metrics_engine.py
+│   ├── test_api_routes.py
+│   └── test_sheets_service.py
+│
+├── .env.example                     # Template showing all required env vars (no real values)
+├── .gitignore                       # Covers: venv/, .env, __pycache__/, *.pyc, .ipynb_checkpoints/, reports/*.png
+├── requirements.txt                 # All Python dependencies pinned
+├── run.py                           # Entry point: runs Flask app
+└── README.md                        # Setup instructions for Windows/Linux/macOS
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 5 — UI/UX DESIGN SPECIFICATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+VISUAL IDENTITY:
+- Dark-primary theme with high-contrast data visualization
+- Color palette (CSS variables):
+  --color-bg-primary: #0D1117
+  --color-bg-secondary: #161B22
+  --color-bg-card: #1C2128
+  --color-border: #30363D
+  --color-text-primary: #E6EDF3
+  --color-text-secondary: #8B949E
+  --color-accent-blue: #2F81F7
+  --color-accent-purple: #8957E5
+  --color-visible: #3FB950        (green — visible work)
+  --color-invisible: #F78166      (coral/red — invisible work)
+  --color-warning: #E3B341
+  --color-danger: #F85149
+  --color-success: #3FB950
+- Typography: system font stack — -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif
+- Font sizes via CSS variables: --text-xs through --text-2xl
+- Border radius: --radius-sm: 6px, --radius-md: 12px, --radius-lg: 20px
+- Spacing scale: 4px base unit — 4, 8, 12, 16, 24, 32, 48, 64px
+
+LAYOUT ARCHITECTURE:
+- Dashboard layout: fixed left sidebar (240px) + scrollable main content area
+- Sidebar: logo at top, nav links with active state, user profile at bottom
+- Main content: max-width 1400px, centered, 24px padding
+- Card component: background var(--color-bg-card), border var(--color-border), radius var(--radius-md), 24px padding
+- Summary stat cards: 4-column grid on desktop, 2-column on tablet, 1-column on mobile
+
+RESPONSIVE BREAKPOINTS:
+- Mobile: < 768px — sidebar collapses to hamburger menu, single column layout
+- Tablet: 768px–1024px — sidebar hidden by default, 2-column grids
+- Desktop: > 1024px — full sidebar, multi-column layouts
+
+PLOTLY CHART EMBEDDING:
+- All Plotly charts embedded directly in HTML as <div id="chart-{name}"> containers
+- Charts rendered via Plotly.js CDN: https://cdn.plot.ly/plotly-latest.min.js
+- Chart background: transparent (paper_bgcolor and plot_bgcolor match card background)
+- Chart text color: #8B949E for axes, #E6EDF3 for titles
+- Chart theme consistent across all: dark mode grid lines (#30363D), no axis lines
+- Charts resize responsively: Plotly config responsive: true on all renders
+- Chart containers have min-height: 300px, max-height: 500px
+
+INTERACTION PATTERNS:
+- Loading states: skeleton screens (CSS animated shimmer) while data fetches — never show empty containers
+- Error states: inline error cards with retry button — never silent failures
+- Hover effects on cards: subtle border color change, transform: translateY(-2px)
+- Active nav items: left border accent, background highlight
+- Buttons: primary (accent blue fill), secondary (transparent + border), danger (red fill)
+- Modals: centered overlay, dark background, smooth CSS transition
+- Tables: zebra striping with dark alternating rows, sticky header
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 6 — API ENDPOINTS SPECIFICATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+All endpoints under /api/ prefix. All responses: Content-Type: application/json.
+All protected routes require Authorization: Bearer <token> header.
+
+AUTH:
+  POST   /api/auth/register           — create account
+  POST   /api/auth/login              — returns JWT
+  POST   /api/auth/logout             — invalidates token
+
+DEVELOPER:
+  GET    /api/developer/me            — current developer profile
+  GET    /api/developer/metrics       — IWR, BCS, PII for current user (query: ?period=day|week|month)
+  GET    /api/developer/logs          — paginated activity logs (query: ?page=&limit=&from=&to=)
+  GET    /api/developer/summary       — weekly summary object
+  POST   /api/developer/sync          — manually trigger Google Sheets sync for user
+
+MANAGER:
+  GET    /api/manager/team            — all developers in manager's team
+  GET    /api/manager/team/metrics    — IWR + BCS for all developers (current week)
+  GET    /api/manager/team/heatmap    — developer × day IWR matrix data
+  GET    /api/manager/developer/:id   — drilldown data for specific developer
+  GET    /api/manager/compare         — query: ?devs=id1,id2,id3 — comparison dataset
+
+ANALYTICS:
+  GET    /api/analytics/iwr-trend     — team IWR over 8 weeks
+  GET    /api/analytics/correlation   — Pearson r: invisible load vs stress (scipy result)
+  GET    /api/analytics/distribution  — activity type distribution across team
+
+SETTINGS:
+  GET    /api/settings/classification — current classification rules mapping
+  PUT    /api/settings/classification — update classification rules
+  GET    /api/settings/thresholds     — IWR + BCS thresholds
+  PUT    /api/settings/thresholds     — update thresholds
+  GET    /api/settings/sheets         — Google Sheets connection status + last sync
+  POST   /api/settings/sheets/verify  — test Sheets connection with given Sheet ID
+
+PIPELINE:
+  POST   /api/pipeline/sync           — trigger manual full pipeline run
+  GET    /api/pipeline/status         — last sync timestamp, row count, error log
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 7 — ENVIRONMENT VARIABLES (.env.example)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Generate .env.example with these exact variable names (no real values — placeholders only):
+
+FLASK_ENV=development
+FLASK_SECRET_KEY=your_flask_secret_key_here
+JWT_SECRET_KEY=your_jwt_secret_key_here
+
+MONGO_URI=mongodb://localhost:27017/iwas_db
+MYSQL_URI=mysql+pymysql://user:password@localhost/iwas_structured
+
+GOOGLE_SERVICE_ACCOUNT_JSON=path/to/service_account.json
+GOOGLE_SHEET_ID=your_google_sheet_id_here
+SHEETS_POLL_INTERVAL_SECONDS=300
+
+BCRYPT_ROUNDS=12
+ACCESS_TOKEN_EXPIRY_HOURS=8
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 8 — CODE QUALITY RULES (ENFORCE WITHOUT EXCEPTION)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PYTHON:
+- PEP 8 strict — 79 char line limit, 2 blank lines between top-level defs, consistent naming
+- Black-formatted — all Python files must be black-compatible
+- flake8-clean — no unused imports, no undefined names
+- Type hints on all function signatures
+- Docstrings on all classes and public functions (Google-style docstrings)
+- No magic numbers — all constants defined at module top or in config
+- Every route handler has try/except — returns structured error JSON on failure
+- No credentials anywhere in code — always os.environ.get() or dotenv load
+
+JAVASCRIPT:
+- ES6 modules (import/export) — no var, only const/let
+- async/await throughout — no .then() chains
+- All fetch calls in api.js module — no direct fetch() in other JS files
+- Error handling on every await call (try/catch)
+- No inline event handlers in HTML — all event listeners in JS files
+
+CSS:
+- All colors via CSS variables — zero hardcoded hex values outside variables.css
+- All spacing via CSS variables or calc() from base unit
+- Mobile-first: base styles for mobile, min-width media queries for larger
+
+GIT:
+- .gitignore covers: venv/, .env, __pycache__/, *.pyc, *.pyo, .ipynb_checkpoints/, reports/*.png, reports/*.pdf, *.egg-info/, dist/, build/
+- README.md includes: project description, setup steps for Windows/Linux/macOS, how to configure .env, how to run
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 9 — BUILD ORDER (EXECUTE IN SEQUENCE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Build in this exact order — do not skip ahead:
+
+PHASE 1 — FOUNDATION:
+1. Generate complete folder/file structure with all __init__.py files and empty module stubs
+2. requirements.txt with all pinned dependencies
+3. .env.example with all variable names
+4. .gitignore
+5. config.py with Development and Production config classes loading from dotenv
+6. create_app() factory in app/__init__.py with blueprint registration stubs
+7. run.py entry point
+8. README.md with cross-platform setup instructions
+
+PHASE 2 — DATABASE LAYER:
+9. sql_models.py — SQLAlchemy models: User, Team, MetricSnapshot tables with full schema
+10. mongo_models.py — PyMongo helpers for activity_logs and developer_profiles collections
+11. Database initialization functions, connection pooling, migration setup
+
+PHASE 3 — AUTH:
+12. auth_helpers.py — bcrypt password hashing, JWT generation/validation
+13. auth.py Blueprint — /register, /login, /logout endpoints with full validation
+14. Route protection decorator for developer and manager roles
+
+PHASE 4 — DATA PIPELINE:
+15. sheets_service.py — Google Sheets auth via service account, row fetcher with rate limit handling
+16. data_cleaner.py — Pandas cleaning: null handling, type coercion, dedup, validation
+17. classifier.py — Work classification engine with configurable mapping
+18. metrics_engine.py — IWR, BCS, PII formulas with NumPy + SciPy (pearsonr documented)
+19. pipeline.py — Orchestrates full pipeline: fetch → clean → classify → compute → store
+
+PHASE 5 — API LAYER:
+20. response_helpers.py — success_response() and error_response() builders
+21. api.py Blueprint — all /api/* endpoints listed in Section 6
+22. developer.py, manager.py route handlers consuming analytics module outputs
+
+PHASE 6 — VISUALIZATION:
+23. plotly_charts.py — All 10+ chart functions (bar, line, gauge, heatmap, scatter, donut)
+24. matplotlib_charts.py — Weekly report static chart functions
+25. dash_app.py + dash_callbacks.py — Full Dash dashboard, mounted at /analytics
+
+PHASE 7 — FRONTEND:
+26. variables.css — complete CSS custom property system (design tokens)
+27. base.css, layout.css, components.css — core styles
+28. index.html — login/landing page
+29. dashboard.html + dashboard.css + dashboard.js — full developer dashboard
+30. manager.html + manager.css + manager.js — full manager dashboard
+31. settings.html + settings.js
+32. api.js — centralized Fetch wrapper module
+33. charts.js — Plotly rendering functions
+34. responsive.css — all breakpoints
+
+PHASE 8 — REPORTING:
+35. report_generator.py — Matplotlib multi-page PDF/PNG weekly report
+
+PHASE 9 — TESTING:
+36. test files for classifier, metrics_engine, api_routes, sheets_service
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 10 — ASSUMPTIONS (VERIFY BEFORE BUILDING)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The following assumptions were made — confirm or override before generation begins:
+
+1. ASSUMED: JWT tokens stored in JS memory (not localStorage/cookies) — confirm preferred auth persistence strategy.
+2. ASSUMED: Google Forms is pre-configured externally by the project owner — IWAS does not create Forms programmatically, only reads the connected Sheet.
+3. ASSUMED: Dash dashboard is embedded as a sub-route in Flask (/analytics) using Dash's server parameter, not a separate process.
+4. ASSUMED: Single team per manager in MVP — multi-team support is backend-ready but frontend defaults to one team view.
+5. ASSUMED: BCS formula weights (0.3 / 0.4 / 0.3) are defaults — configurable via settings in production.
+6. ASSUMED: Sheet polling every 5 minutes via a background thread (APScheduler) within Flask — not a separate worker process.
+7. ASSUMED: Reports are generated server-side and served as downloadable file responses — not rendered client-side.
+8. ASSUMED: No real-time WebSocket updates in MVP — dashboard data refreshes on page load and via manual refresh button.
+9. ASSUMED: MySQL handles user accounts, teams, and metric snapshots; MongoDB handles raw activity logs and pipeline state.
+10. ASSUMED: The Dash app shares the same Flask server instance — if this causes conflicts in deployment, Dash will be run as embedded iframe from a separate port.
+
+═══════════════════════════════════════════════════════════════
+START WITH PHASE 1. Generate all foundation files completely before moving to Phase 2.
+Every file must be complete and functional — no placeholders, no TODO stubs, no partial implementations.
+This is a production-grade system. Build it that way from the first line.
+═══════════════════════════════════════════════════════════════

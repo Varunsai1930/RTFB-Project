@@ -1,0 +1,246 @@
+/* ═══════════════════════════════════════════════════════════════
+   INVISIWORK — WEEKLY SUMMARY STYLES
+   Week Selector, Stats Row, Chart, Activity Table, Highlight
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Page Header ── */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6) var(--space-6);
+}
+
+.page-header h1 {
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text);
+}
+
+.page-header p {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-base);
+  margin-top: var(--space-1);
+}
+
+/* ── Week Selector ── */
+.week-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  max-width: 500px;
+  margin: 0 auto var(--space-6);
+}
+
+.week-selector__label {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  color: var(--color-text);
+  text-align: center;
+  min-width: 200px;
+}
+
+/* ── Weekly Stats Row ── */
+.weekly-stats-row {
+  max-width: 1400px;
+  margin: 0 auto var(--space-6);
+  padding: 0 var(--space-6);
+}
+
+.weekly-stats-row .skeleton-wrap {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+}
+
+.weekly-stats-row .content-wrap {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+}
+
+.weekly-stat-card {
+  text-align: center;
+  padding: var(--space-6);
+}
+
+.weekly-stat-card__value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
+}
+
+.weekly-stat-card__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Chart Section ── */
+.chart-section {
+  max-width: 1400px;
+  margin: 0 var(--space-6) var(--space-6);
+}
+
+@media (min-width: 1432px) {
+  .chart-section {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.chart-section h2 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+
+/* ── Table Section ── */
+.table-section {
+  max-width: 1400px;
+  margin: 0 var(--space-6) var(--space-6);
+}
+
+@media (min-width: 1432px) {
+  .table-section {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+}
+
+.activity-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.activity-table th {
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-bg);
+  text-align: left;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  position: sticky;
+  top: 0;
+  user-select: none;
+}
+
+.activity-table th.sortable {
+  cursor: pointer;
+  transition: color var(--transition-base);
+}
+
+.activity-table th.sortable:hover {
+  color: var(--color-primary);
+}
+
+.activity-table th.sort-asc .sort-icon::after {
+  content: ' ↑';
+  color: var(--color-primary);
+}
+
+.activity-table th.sort-desc .sort-icon::after {
+  content: ' ↓';
+  color: var(--color-primary);
+}
+
+.activity-table td {
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--font-size-sm);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.activity-table tr:nth-child(even) td {
+  background: var(--color-bg);
+}
+
+.activity-table tr:hover td {
+  background: var(--color-primary-light);
+  transition: background 0.15s ease;
+}
+
+/* ── Highlight Card ── */
+.highlight-card {
+  border-left: 4px solid var(--color-primary);
+  background: var(--color-primary-light);
+  padding: var(--space-5) var(--space-6);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  max-width: 1400px;
+  margin: var(--space-6) var(--space-6) var(--space-8);
+}
+
+@media (min-width: 1432px) {
+  .highlight-card {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ═══ RESPONSIVE ═══ */
+
+@media (max-width: 1024px) {
+
+  .weekly-stats-row .skeleton-wrap,
+  .weekly-stats-row .content-wrap {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+
+  .weekly-stats-row .skeleton-wrap,
+  .weekly-stats-row .content-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header {
+    padding: var(--space-6) var(--space-4) var(--space-4);
+  }
+
+  .weekly-stats-row {
+    padding: 0 var(--space-4);
+  }
+
+  .chart-section,
+  .table-section {
+    margin-left: var(--space-4);
+    margin-right: var(--space-4);
+  }
+
+  .highlight-card {
+    margin-left: var(--space-4);
+    margin-right: var(--space-4);
+  }
+
+  .week-selector {
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .week-selector__label {
+    font-size: var(--font-size-base);
+    min-width: 150px;
+  }
+}
